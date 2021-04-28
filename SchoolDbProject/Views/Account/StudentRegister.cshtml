@@ -1,0 +1,80 @@
+﻿@model SchoolDbProject.LoginAndRegistraionModels.StudentRegisterModel
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: 1px solid #808080;
+        padding: 12px;
+    }
+
+    .flex {
+        display: flex;
+    }
+
+    li {
+        list-style-type: none;
+        padding: 10px;
+    }
+
+    #reg {
+        width: 100%;
+    }
+</style>
+
+<form asp-action="StudentRegister" asp-controller="Account">
+    <div class="center">
+        <div class="flex">
+            <div>
+                <ul>
+                    <li>
+                        <label asp-for="StudentId">Enter Student Id</label>
+                    </li>
+                    <li>
+                        <label asp-for="Email">Enter Email</label>
+                    </li>
+                    <li>
+                        <label asp-for="Password">Enter Password</label>
+                    </li>
+                    <li>
+                        <label asp-for="ConfirmPassword">Confirm Password</label>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>
+                        @Html.TextBoxFor(s => s.StudentId, new { autocomplete = "off" })
+                        <div class="text-danger">@Html.ValidationMessageFor(s => s.StudentId)</div>
+                    </li>
+                    <li>
+                        @Html.TextBoxFor(s => s.Email, new { autocomplete = "off" })
+                        <div class="text-danger">@Html.ValidationMessageFor(s => s.Email)</div>
+                    </li>
+                    <li>
+                        @Html.EditorFor(s => s.Password)
+                        <div class="text-danger">@Html.ValidationMessageFor(s => s.Password)</div>
+                    </li>
+                    <li>
+                        @Html.EditorFor(s => s.ConfirmPassword)
+                        <div class="text-danger">@Html.ValidationMessageFor(s => s.ConfirmPassword)</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-danger">
+            @ViewBag.ErrorMessage
+        </div>
+        <div>
+            <input id="reg" type="submit" value="Register" class="btn btn-outline-dark" />
+        </div>
+    </div>
+</form>

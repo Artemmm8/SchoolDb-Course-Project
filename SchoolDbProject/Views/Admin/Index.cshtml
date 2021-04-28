@@ -1,0 +1,58 @@
+﻿@*<form asp-action="Index" asp-controller="Admin" enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <input type="submit" value="add" />
+    </form>
+
+    <div>
+        @ViewBag.Error
+    </div>
+
+    <div>
+        <button id="exp" class="btn btn-outline-dark">Export Data</button>
+    </div>
+
+
+    @section Scripts{
+        <script defer type="text/javascript">
+            exp.onclick = function () {
+                window.open('https://localhost:44389/Admin/Export', '_self');
+            }
+        </script>
+    }*@
+
+
+<div>
+    Subjects
+    @Html.ActionLink("Add", "AddSubject", "Admin")
+    @Html.ActionLink("Add", "AddSubject", "Admin")
+</div>
+<div>
+    Classes
+    @Html.ActionLink("Add", "AddSubject", "Admin")
+    @Html.ActionLink("Add", "AddSubject", "Admin")
+</div>
+<div>
+    Cabinets
+    @Html.ActionLink("Add", "AddSubject", "Admin")
+    @Html.ActionLink("Add", "AddSubject", "Admin")
+</div>
+<div>
+    Teachers
+    @Html.ActionLink("Add", "AddSubject", "Admin")
+    @Html.ActionLink("Add", "AddSubject", "Admin")
+</div>
+<div>
+    Students
+    @Html.ActionLink("Add", "AddSubject", "Admin")
+    @Html.ActionLink("Add", "AddSubject", "Admin")
+</div>
+<div>
+    Marks
+    @Html.ActionLink("Add", "AddSubject", "Admin")
+    @Html.ActionLink("Add", "AddSubject", "Admin")
+</div>
+<div>
+    Lessons
+    @Html.ActionLink("Add", "AddSubject", "Admin")
+    @Html.ActionLink("Add", "AddSubject", "Admin")
+</div>

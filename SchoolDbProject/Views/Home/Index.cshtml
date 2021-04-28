@@ -1,0 +1,42 @@
+﻿<style>
+    .center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px 20px;
+    }
+
+    #btnstud {
+        width: 150px;
+        height: 40px;
+    }
+
+    #btnteach {
+        width: 150px;
+        height: 40px;
+    }
+
+    .choose {
+        text-align: center;
+        padding: 10px 10px;
+    }
+</style>
+
+<div class="center">
+    <div class="choose">Choose account type:</div>
+    <div>
+        <button id="btnteach" class="btn btn-outline-dark">Teacher</button>
+        <button id="btnstud" class="btn btn-outline-dark">Student</button>
+    </div>
+
+</div>
+<script defer type="text/javascript">
+    btnteach.onclick = function () {
+        window.open('https://localhost:44389/Teacher/Index', '_self');
+    }
+
+    btnstud.onclick = function () {
+        window.open('https://localhost:44389/Student/Index', '_self');
+    }
+</script>

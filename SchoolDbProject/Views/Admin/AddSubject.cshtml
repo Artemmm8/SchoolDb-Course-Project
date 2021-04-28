@@ -1,0 +1,11 @@
+﻿@model Subject
+
+<form asp-action="AddSubject" asp-controller="Admin">
+    <div>
+        <label asp-for="SubjectName">Enter Subject Name</label>
+        <input asp-for="SubjectName" type="text" autocomplete="off" />
+    </div>
+    <div>
+        <input type="submit" value="Add Subject" class="btn btn-outline-dark" />
+    </div>
+</form>

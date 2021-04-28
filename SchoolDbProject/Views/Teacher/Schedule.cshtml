@@ -1,0 +1,123 @@
+﻿@model IEnumerable<CustomSchedule>
+
+<style>
+    .day {
+        border: solid #ccc 1px;
+        width: 200px;
+        padding-top: 20px;
+        margin-top: 13px;
+    }
+
+    .flex {
+        display: flex;
+    }
+
+    .buttons div {
+        padding-bottom: 10px;
+        padding-top: 10px;
+        padding-right: 30px;
+    }
+
+    button {
+        height: 40px;
+        width: 100%;
+    }
+
+    .row {
+        display: flex;
+        margin-left: 10px;
+        margin-right: 10px;
+        text-align: center;
+    }
+
+    .rowd {
+        font-weight: 600;
+        text-align: center;
+        padding-bottom: 15px;
+    }
+
+    .column {
+        flex: 30%;
+        font-size: small;
+    }
+</style>
+
+<div class="flex">
+    <div class="buttons">
+        <div>
+            <button id="personal" class="btn btn-outline-dark">Personal</button>
+        </div>
+        <div>
+            <button id="schedule" class="btn btn-outline-dark">Schedule</button>
+        </div>
+        <div>
+            <button id="marks" class="btn btn-outline-dark">Marks</button>
+        </div>
+        <div>
+            <button id="logout" class="btn btn-outline-dark">Logout</button>
+        </div>
+    </div>
+    <div class="flex">
+        @for (int i = 1; i < 6; i++)
+        {
+            <div class="day">
+                @if ((int)DayOfWeek.Monday == i)
+                {
+                    <div class="rowd">@DayOfWeek.Monday</div>
+                }
+                else if ((int)DayOfWeek.Tuesday == i)
+                {
+                    <div class="rowd">@DayOfWeek.Tuesday</div>
+                }
+                else if ((int)DayOfWeek.Wednesday == i)
+                {
+                    <div class="rowd">@DayOfWeek.Wednesday</div>
+                }
+                else if ((int)DayOfWeek.Thursday == i)
+                {
+                    <div class="rowd">@DayOfWeek.Thursday</div>
+                }
+                else
+                {
+                    <div class="rowd">@DayOfWeek.Friday</div>
+                }
+
+                <div class="row">
+                    <div class="column">Lesson #</div>
+                    <div class="column">Subject</div>
+                    <div class="column">Cabinet</div>
+                </div>
+
+                @foreach (var ss in Model)
+                {
+                    if (ss.DayOfWeek == i)
+                    {
+                        <div class="row">
+                            <div class="column">@ss.LessonNumber</div>
+                            <div class="column">@ss.Subject</div>
+                            <div class="column">@ss.CabinetId</div>
+                        </div>
+                    }
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<script defer type="text/javascript">
+    personal.onclick = function () {
+        window.open('https://localhost:44389/Teacher/Personal', '_self');
+    }
+
+    schedule.onclick = function () {
+        window.open('https://localhost:44389/Teacher/Schedule', '_self');
+    }
+
+    marks.onclick = function () {
+        window.open('https://localhost:44389/Teacher/Marks', '_self');
+    }
+
+    logout.onclick = function () {
+        window.open('https://localhost:44389/Account/Logout', '_self');
+    }
+</script>

@@ -1,0 +1,41 @@
+﻿<style>
+    .center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px 20px;
+    }
+
+    #log {
+        width: 150px;
+        height: 40px;
+    }
+
+    #reg {
+        width: 150px;
+        height: 40px;
+    }
+
+    .choose {
+        text-align: center;
+        padding: 10px 10px;
+    }
+</style>
+
+<div class="center">
+    <div>
+        <button id="log" class="btn btn-outline-dark">Login</button>
+        <button id="reg" class="btn btn-outline-dark">Register</button>
+    </div>
+
+</div>
+<script defer type="text/javascript">
+    log.onclick = function () {
+        window.open('https://localhost:44389/Account/TeacherLogin', '_self');
+    }
+
+    reg.onclick = function () {
+        window.open('https://localhost:44389/Account/TeacherRegister', '_self');
+    }
+</script>

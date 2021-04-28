@@ -1,0 +1,109 @@
+﻿@model SchoolDbProject.Models.Student
+
+<style>
+    button {
+        height: 40px;
+        width: 100%;
+    }
+
+    .flex {
+        display: flex;
+    }
+
+    .buttons div {
+        padding-bottom: 10px;
+        padding-top: 10px;
+        padding-right: 10px;
+    }
+
+    li {
+        list-style-type: none;
+        padding: 10px;
+    }
+
+    .submbtn {
+        padding-left: 559px;
+    }
+
+    .linput {
+        width: 400px;
+    }
+</style>
+
+<div class="flex">
+    <div class="buttons">
+        <div>
+            <button id="personal" class="btn btn-outline-dark">Personal</button>
+        </div>
+        <div>
+            <button id="schedule" class="btn btn-outline-dark">Schedule</button>
+        </div>
+        <div>
+            <button id="marks" class="btn btn-outline-dark">Marks</button>
+        </div>
+        <div>
+            <button id="logout" class="btn btn-outline-dark">Logout</button>
+        </div>
+    </div>
+    <div>
+        <form asp-action="Personal" asp-controller="Student">
+            <div class="flex">
+                <div>
+                    <ul>
+                        <li>
+                            <label asp-for="FirstName">First Name</label>
+                        </li>
+                        <li>
+                            <label asp-for="LastName">Last Name</label>
+                        </li>
+                        <li>
+                            <label asp-for="Email">Email</label>
+                        </li>
+                        <li>
+                            <label asp-for="PhoneNumber">Phone Number</label>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <ul>
+                        <li>
+                            @Html.TextBoxFor(s => s.FirstName, new { autocomplete = "off", value = Model.FirstName, @class = "linput" })
+                        </li>
+                        <li>
+                            @Html.TextBoxFor(s => s.LastName, new { autocomplete = "off", value = Model.LastName, @class = "linput" })
+                        </li>
+                        <li>
+                            @Html.TextBoxFor(s => s.Email, new { autocomplete = "off", value = Model.Email, @class = "linput" })
+                            <div class="text-danger">@Html.ValidationMessageFor(s => s.Email)</div>
+                        </li>
+                        <li>
+                            @Html.TextBoxFor(s => s.PhoneNumber, new { autocomplete = "off", value = Model.PhoneNumber, @class = "linput" })
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="submbtn">
+                <input id="submbtn" type="submit" value="Save" class="btn btn-outline-dark" />
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script defer type="text/javascript">
+    personal.onclick = function () {
+        window.open('https://localhost:44389/Student/Personal', '_self');
+    }
+
+    schedule.onclick = function () {
+        window.open('https://localhost:44389/Student/Schedule', '_self');
+    }
+
+    marks.onclick = function () {
+        window.open('https://localhost:44389/Student/Marks', '_self');
+    }
+
+    logout.onclick = function () {
+        window.open('https://localhost:44389/Account/Logout', '_self');
+    }
+</script>

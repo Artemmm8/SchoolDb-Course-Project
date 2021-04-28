@@ -1,0 +1,66 @@
+﻿@model SchoolDbProject.LoginAndRegistraionModels.StudentLoginModel
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 12px;
+        border: 1px solid #808080;
+    }
+
+    .flex {
+        display: flex;
+    }
+
+    li {
+        list-style-type: none;
+        padding: 10px;
+    }
+
+    #log {
+        width: 100%;
+    }
+</style>
+
+<form asp-action="StudentLogin" asp-controller="Account">
+    <div class="center">
+        <div class="flex">
+            <div>
+                <ul>
+                    <li>
+                        <label asp-for="StudentId">Enter Student Id</label>
+                    </li>
+                    <li>
+                        <label asp-for="Password">Enter Password</label>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>
+                        @Html.TextBoxFor(s => s.StudentId, new { autocomplete = "off" })
+                        <div class="text-danger">@Html.ValidationMessageFor(s => s.StudentId)</div>
+                    </li>
+                    <li>
+                        @Html.EditorFor(s => s.Password)
+                        <div class="text-danger">@Html.ValidationMessageFor(s => s.Password)</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-danger">
+            @ViewBag.ErrorMessage
+        </div>
+        <div>
+            <input id="log" type="submit" value="Login" class="btn btn-outline-dark" />
+        </div>
+    </div>
+</form>
