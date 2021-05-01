@@ -1,0 +1,53 @@
+﻿@model Class
+
+<style>
+    .flex {
+        display: flex;
+    }
+
+    li {
+        list-style-type: none;
+        padding: 10px;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    #submbtn {
+        width: 100%;
+        margin-top: 20px;
+    }
+</style>
+
+<div>
+    <form asp-action="AddClassByForm" asp-controller="Admin">
+        <div class="flex">
+            <div>
+                <ul>
+                    <li>
+                        <label asp-for="ClassName">Enter Class Name</label>
+                    </li>
+                    <li>
+                        <label asp-for="NumberOfStudents">Enter Number Of Students</label>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>
+                        @Html.TextBoxFor(c => c.ClassName, new { autocomplete = "off" })
+                    </li>
+                    <li>
+                        @Html.TextBoxFor(c => c.NumberOfStudents, new { autocomplete = "off" })
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <input id="submbtn" type="submit" value="Add Class" class="btn btn-outline-dark" />
+        </div>
+    </form>
+</div>

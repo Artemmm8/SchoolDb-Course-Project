@@ -1,0 +1,77 @@
+﻿@model Teacher
+<style>
+    .example-1 .form-group {
+        padding: 1em;
+        margin: 1em
+    }
+
+    .example-1 input[type=file] {
+        outline: 0;
+        opacity: 0;
+        pointer-events: none;
+        user-select: none
+    }
+
+    .example-1 .label {
+        width: 150px;
+        border: 2px dashed grey;
+        border-radius: 5px;
+        display: block;
+        padding: 1.2em;
+        transition: border 300ms ease;
+        cursor: pointer;
+        text-align: center
+    }
+
+    .example-1 .label i {
+        display: block;
+        font-size: 42px;
+        padding-bottom: 16px
+    }
+
+    .example-1 .label i, .example-1 .label .title {
+        color: grey;
+        transition: 200ms color
+    }
+
+    .example-1 .label:hover {
+        border: 2px solid #000
+    }
+
+    .example-1 .label:hover i, .example-1 .label:hover .title {
+        color: #000
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    #impdata {
+        margin-left: 31px;
+        width: 151px;
+    }
+
+    .attach {
+
+    }
+</style>
+
+<div class="attach">
+    <form asp-action="AddTeacherByXml" asp-controller="Admin" enctype="multipart/form-data">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <div class="example-1">
+            <div class="form-group">
+                <label class="label">
+                    <i class="material-icons">attach_file</i>
+                    <span class="title">Choose File</span>
+                    <input type="file" name="file">
+                </label>
+            </div>
+        </div>
+        <div>
+            <input id="impdata" type="submit" value="Import Data" class="btn btn-outline-dark" />
+        </div>
+    </form>
+</div>

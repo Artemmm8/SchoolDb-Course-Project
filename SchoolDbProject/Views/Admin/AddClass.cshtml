@@ -1,4 +1,4 @@
-﻿@model Subject
+﻿@model Class
 
 <style>
     .example-1 .form-group {
@@ -78,31 +78,37 @@
     }
 
     .form {
-        margin-top: 40px;
+        margin-top: 25px;
     }
 </style>
 
 <div class="flex">
     <div class="form">
-        <form asp-action="AddSubjectForm" asp-controller="Admin">
+        <form asp-action="AddClassForm" asp-controller="Admin">
             <div class="flex">
                 <div>
                     <ul>
                         <li>
-                            <label asp-for="SubjectName">Enter Subject Name</label>
+                            <label asp-for="ClassName">Enter Class Name</label>
+                        </li>
+                        <li>
+                            <label asp-for="NumberOfStudents">Enter Number Of Students</label>
                         </li>
                     </ul>
                 </div>
                 <div>
                     <ul>
                         <li>
-                            @Html.TextBoxFor(s => s.SubjectName, new { autocomplete = "off" })
+                            @Html.TextBoxFor(c => c.ClassName, new { autocomplete = "off" })
+                        </li>
+                        <li>
+                            @Html.TextBoxFor(c => c.NumberOfStudents, new { autocomplete = "off" })
                         </li>
                     </ul>
                 </div>
             </div>
             <div>
-                <input id="submbtn" type="submit" value="Add Subject" class="btn btn-outline-dark" />
+                <input id="submbtn" type="submit" value="Add Class" class="btn btn-outline-dark" />
             </div>
         </form>
     </div>
@@ -110,7 +116,7 @@
         <h3>Or</h3>
     </div>
     <div class="attach">
-        <form asp-action="AddSubjectXml" asp-controller="Admin" enctype="multipart/form-data">
+        <form asp-action="AddClassXml" asp-controller="Admin" enctype="multipart/form-data">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
             <div class="example-1">
                 <div class="form-group">

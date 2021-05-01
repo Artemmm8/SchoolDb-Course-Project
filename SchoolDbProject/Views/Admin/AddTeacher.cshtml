@@ -1,5 +1,4 @@
-﻿@model Subject
-
+﻿@model Teacher
 <style>
     .example-1 .form-group {
         padding: 1em;
@@ -74,35 +73,43 @@
 
     #submbtn {
         width: 100%;
-        margin-top: 20px;
-    }
-
-    .form {
-        margin-top: 40px;
+        margin-top: 32px;
     }
 </style>
 
 <div class="flex">
-    <div class="form">
-        <form asp-action="AddSubjectForm" asp-controller="Admin">
+    <div>
+        <form asp-action="AddTeacherForm" asp-controller="Admin">
             <div class="flex">
                 <div>
                     <ul>
                         <li>
-                            <label asp-for="SubjectName">Enter Subject Name</label>
+                            <label asp-for="TeacherId">Enter Teacher Id</label>
+                        </li>
+                        <li>
+                            <label asp-for="Email">Enter Email</label>
+                        </li>
+                        <li>
+                            <label asp-for="Password">Enter Password</label>
                         </li>
                     </ul>
                 </div>
                 <div>
                     <ul>
                         <li>
-                            @Html.TextBoxFor(s => s.SubjectName, new { autocomplete = "off" })
+                            @Html.TextBoxFor(t => t.TeacherId, new { autocomplete = "off", value = "" })
+                        </li>
+                        <li>
+                            @Html.TextBoxFor(t => t.Email, new { autocomplete = "off", value = "" })
+                        </li>
+                        <li>
+                            @Html.EditorFor(t => t.Password)
                         </li>
                     </ul>
                 </div>
             </div>
             <div>
-                <input id="submbtn" type="submit" value="Add Subject" class="btn btn-outline-dark" />
+                <input id="submbtn" type="submit" value="Add Teacher" class="btn btn-outline-dark" />
             </div>
         </form>
     </div>
@@ -110,7 +117,7 @@
         <h3>Or</h3>
     </div>
     <div class="attach">
-        <form asp-action="AddSubjectXml" asp-controller="Admin" enctype="multipart/form-data">
+        <form asp-action="AddTeacherXml" asp-controller="Admin" enctype="multipart/form-data">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
             <div class="example-1">
                 <div class="form-group">

@@ -1,4 +1,4 @@
-﻿@model Subject
+﻿@model Cabinet
 
 <style>
     .example-1 .form-group {
@@ -84,25 +84,25 @@
 
 <div class="flex">
     <div class="form">
-        <form asp-action="AddSubjectForm" asp-controller="Admin">
+        <form asp-action="AddCabinetForm" asp-controller="Admin">
             <div class="flex">
                 <div>
                     <ul>
                         <li>
-                            <label asp-for="SubjectName">Enter Subject Name</label>
+                            <label asp-for="NumberOfSeats">Enter Number Of Seats</label>
                         </li>
                     </ul>
                 </div>
                 <div>
                     <ul>
                         <li>
-                            @Html.TextBoxFor(s => s.SubjectName, new { autocomplete = "off" })
+                            @Html.TextBoxFor(c => c.NumberOfSeats, new { autocomplete = "off" })
                         </li>
                     </ul>
                 </div>
             </div>
             <div>
-                <input id="submbtn" type="submit" value="Add Subject" class="btn btn-outline-dark" />
+                <input id="submbtn" type="submit" value="Add Cabinet" class="btn btn-outline-dark" />
             </div>
         </form>
     </div>
@@ -110,7 +110,7 @@
         <h3>Or</h3>
     </div>
     <div class="attach">
-        <form asp-action="AddSubjectXml" asp-controller="Admin" enctype="multipart/form-data">
+        <form asp-action="AddCabinetXml" asp-controller="Admin" enctype="multipart/form-data">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
             <div class="example-1">
                 <div class="form-group">

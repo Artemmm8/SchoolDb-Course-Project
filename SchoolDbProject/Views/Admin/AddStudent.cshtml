@@ -1,5 +1,4 @@
-﻿@model Subject
-
+﻿@model CustomStudent
 <style>
     .example-1 .form-group {
         padding: 1em;
@@ -74,35 +73,53 @@
 
     #submbtn {
         width: 100%;
-        margin-top: 20px;
+        margin-top: 32px;
     }
 
-    .form {
-        margin-top: 40px;
+    #li4 {
+        width: 100%;
     }
 </style>
 
 <div class="flex">
-    <div class="form">
-        <form asp-action="AddSubjectForm" asp-controller="Admin">
+    <div>
+        <form asp-action="AddStudentForm" asp-controller="Admin">
             <div class="flex">
                 <div>
                     <ul>
                         <li>
-                            <label asp-for="SubjectName">Enter Subject Name</label>
+                            <label asp-for="StudentId">Enter Student Id</label>
+                        </li>
+                        <li>
+                            <label asp-for="Email">Enter Email</label>
+                        </li>
+                        <li>
+                            <label asp-for="Password">Enter Password</label>
+                        </li>
+                        <li>
+                            <label asp-for="ClassName">Choose Class</label>
                         </li>
                     </ul>
                 </div>
                 <div>
                     <ul>
                         <li>
-                            @Html.TextBoxFor(s => s.SubjectName, new { autocomplete = "off" })
+                            @Html.TextBoxFor(s => s.StudentId, new { autocomplete = "off", onchange = "getSelected()", id = "li1" })
+                        </li>
+                        <li>
+                            @Html.TextBoxFor(s => s.Email, new { autocomplete = "off", onchange = "getSelected()", id = "li2" })
+                        </li>
+                        <li>
+                            @Html.EditorFor(s => s.Password, new { id = "li3" })
+                        </li>
+                        <li>
+                            @Html.DropDownListFor(cs => cs.ClassName, new SelectList(Model.Classes), " ", new { onchange = "getSelected()", id = "li4" })
                         </li>
                     </ul>
                 </div>
             </div>
             <div>
-                <input id="submbtn" type="submit" value="Add Subject" class="btn btn-outline-dark" />
+                <input id="submbtn" type="submit" value="Add Student" class="btn btn-outline-dark" disabled />
             </div>
         </form>
     </div>
@@ -110,20 +127,39 @@
         <h3>Or</h3>
     </div>
     <div class="attach">
-        <form asp-action="AddSubjectXml" asp-controller="Admin" enctype="multipart/form-data">
+        <form asp-action="AddStudentXml" asp-controller="Admin" enctype="multipart/form-data">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
             <div class="example-1">
                 <div class="form-group">
                     <label class="label">
                         <i class="material-icons">attach_file</i>
                         <span class="title">Choose File</span>
-                        <input type="file" name="file">
+                        <input type="file" name="file" id="file" onchange="onLoaded()">
                     </label>
                 </div>
             </div>
             <div>
-                <input id="impdata" type="submit" value="Import Data" class="btn btn-outline-dark" />
+                <input id="impdata" type="submit" value="Import Data" class="btn btn-outline-dark" disabled />
             </div>
         </form>
     </div>
 </div>
+<script defer type="text/javascript">
+    function getSelected() {
+        if ($('#li4 option:selected').text() == ' ' || $('#li1').val() == '' || $('#li2').val() == '' || $('#li3').val() == '') {
+            $("#submbtn").prop("disabled", true);
+        }
+        else {
+            $("#submbtn").prop("disabled", false);
+        }
+    }
+
+    function onLoaded() {
+        if ($('#file').val() == '') {
+            $("#impdata").prop("disabled", true);
+        }
+        else {
+            $("#impdata").prop("disabled", false);
+        }
+    }
+</script>

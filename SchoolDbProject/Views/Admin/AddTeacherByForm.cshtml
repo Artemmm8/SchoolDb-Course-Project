@@ -1,0 +1,58 @@
+﻿@model Teacher
+<style>
+    .flex {
+        display: flex;
+    }
+
+    li {
+        list-style-type: none;
+        padding: 10px;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    #submbtn {
+        width: 100%;
+        margin-top: 32px;
+    }
+</style>
+
+<div>
+    <form asp-action="AddTeacherByForm" asp-controller="Admin">
+        <div class="flex">
+            <div>
+                <ul>
+                    <li>
+                        <label asp-for="TeacherId">Enter Teacher Id</label>
+                    </li>
+                    <li>
+                        <label asp-for="Email">Enter Email</label>
+                    </li>
+                    <li>
+                        <label asp-for="Password">Enter Password</label>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>
+                        @Html.TextBoxFor(t => t.TeacherId, new { autocomplete = "off", value = "" })
+                    </li>
+                    <li>
+                        @Html.TextBoxFor(t => t.Email, new { autocomplete = "off", value = "" })
+                    </li>
+                    <li>
+                        @Html.EditorFor(t => t.Password)
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <input id="submbtn" type="submit" value="Add Teacher" class="btn btn-outline-dark" />
+        </div>
+    </form>
+</div>

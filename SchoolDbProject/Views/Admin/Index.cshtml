@@ -1,58 +1,184 @@
-﻿@*<form asp-action="Index" asp-controller="Admin" enctype="multipart/form-data">
-        <input type="file" name="file" />
-        <input type="submit" value="add" />
-    </form>
+﻿<style>
+    .flex {
+        display: flex;
+    }
 
+    li {
+        list-style-type: none;
+    }
+
+    ul {
+        padding-left: 15px;
+    }
+</style>
+
+<div class="flex">
     <div>
-        @ViewBag.Error
+        <ul>
+            <li>
+                ___
+            </li>
+            <li>
+                Subjects
+            </li>
+            <li>
+                Classes
+            </li>
+            <li>
+                Cabinets
+            </li>
+            <li>
+                Teachers
+            </li>
+            <li>
+                Students
+            </li>
+            <li>
+                Marks
+            </li>
+            <li>
+                Lessons
+            </li>
+        </ul>
     </div>
-
     <div>
-        <button id="exp" class="btn btn-outline-dark">Export Data</button>
+        <ul>
+            <li>
+                Add
+            </li>
+            <li>
+                @Html.ActionLink("By Form", "AddSubjectByForm", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("By Form", "AddClassByForm", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("By Form", "AddCabinetByForm", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("By Form", "AddTeacherByForm", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("By Form", "AddStudentByForm", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("By Form", "AddMarkByForm", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("By Form", "AddLessonByForm", "Admin")
+            </li>
+        </ul>
     </div>
-
-
-    @section Scripts{
-        <script defer type="text/javascript">
-            exp.onclick = function () {
-                window.open('https://localhost:44389/Admin/Export', '_self');
-            }
-        </script>
-    }*@
-
-
-<div>
-    Subjects
-    @Html.ActionLink("Add", "AddSubject", "Admin")
-    @Html.ActionLink("Add", "AddSubject", "Admin")
-</div>
-<div>
-    Classes
-    @Html.ActionLink("Add", "AddSubject", "Admin")
-    @Html.ActionLink("Add", "AddSubject", "Admin")
-</div>
-<div>
-    Cabinets
-    @Html.ActionLink("Add", "AddSubject", "Admin")
-    @Html.ActionLink("Add", "AddSubject", "Admin")
-</div>
-<div>
-    Teachers
-    @Html.ActionLink("Add", "AddSubject", "Admin")
-    @Html.ActionLink("Add", "AddSubject", "Admin")
-</div>
-<div>
-    Students
-    @Html.ActionLink("Add", "AddSubject", "Admin")
-    @Html.ActionLink("Add", "AddSubject", "Admin")
-</div>
-<div>
-    Marks
-    @Html.ActionLink("Add", "AddSubject", "Admin")
-    @Html.ActionLink("Add", "AddSubject", "Admin")
-</div>
-<div>
-    Lessons
-    @Html.ActionLink("Add", "AddSubject", "Admin")
-    @Html.ActionLink("Add", "AddSubject", "Admin")
+    <div>
+        <ul>
+            <li>
+                Add
+            </li>
+            <li>
+                @Html.ActionLink("By XML", "AddSubjectByXml", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("By XML", "AddClassByXml", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("By XML", "AddCabinetByXml", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("By XML", "AddTeacherByXml", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("By XML", "AddStudentByXml", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("By XML", "AddMarkByXml", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("By XML", "AddLessonByXml", "Admin")
+            </li>
+        </ul>
+    </div>
+    <div>
+        <ul>
+            <li>
+                ___
+            </li>
+            <li>
+                @Html.ActionLink("Delete", "DeleteSubject", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Delete", "DeleteClass", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Delete", "DeleteCabinet", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Delete", "DeleteTeacher", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Delete", "DeleteStudent", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Delete", "DeleteMark", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Delete", "DeleteLesson", "Admin")
+            </li>
+        </ul>
+    </div>
+    <div>
+        <ul>
+            <li>
+                ___
+            </li>
+            <li>
+                @Html.ActionLink("Edit", "EditSubject", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Edit", "EditClass", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Edit", "EditCabinet", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Edit", "EditTeacher", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Edit", "EditStudent", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Edit", "EditMark", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Edit", "EditLesson", "Admin")
+            </li>
+        </ul>
+    </div>
+    <div>
+        <ul>
+            <li>
+                ___
+            </li>
+            <li>
+                @Html.ActionLink("Export", "ExportSubjects", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Export", "ExportClasses", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Export", "ExportCabinets", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Export", "ExportTeachers", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Export", "ExportStudents", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Export", "ExportMarks", "Admin")
+            </li>
+            <li>
+                @Html.ActionLink("Export", "ExportLessons", "Admin")
+            </li>
+        </ul>
+    </div>
 </div>

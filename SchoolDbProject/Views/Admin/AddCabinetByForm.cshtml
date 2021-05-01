@@ -1,0 +1,48 @@
+﻿@model Cabinet
+
+<style>
+    .flex {
+        display: flex;
+    }
+
+    li {
+        list-style-type: none;
+        padding: 10px;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    #submbtn {
+        width: 100%;
+        margin-top: 20px;
+    }
+</style>
+
+<div>
+    <form asp-action="AddCabinetByForm" asp-controller="Admin">
+        <div class="flex">
+            <div>
+                <ul>
+                    <li>
+                        <label asp-for="NumberOfSeats">Enter Number Of Seats</label>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>
+                        @Html.TextBoxFor(c => c.NumberOfSeats, new { autocomplete = "off" })
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <input id="submbtn" type="submit" value="Add Cabinet" class="btn btn-outline-dark" />
+        </div>
+    </form>
+</div>
+    
