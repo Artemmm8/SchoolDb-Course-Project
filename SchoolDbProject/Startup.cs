@@ -38,12 +38,12 @@ namespace SchoolDbProject
 
             services.AddDistributedMemoryCache();
 
-            //services.AddSession(options =>
-            //{
-            //    options.IdleTimeout = TimeSpan.FromSeconds(200000);
-            //    options.Cookie.Name = ".MyKuki";
-            //    options.Cookie.IsEssential = true;
-            //});
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(200000);
+                options.Cookie.Name = ".MyKuki";
+                options.Cookie.IsEssential = false;
+            });
 
             services.AddControllersWithViews();
         }
@@ -67,7 +67,7 @@ namespace SchoolDbProject
             // app.UseAuthentication();
             // app.UseAuthorization();
 
-            // app.UseSession();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

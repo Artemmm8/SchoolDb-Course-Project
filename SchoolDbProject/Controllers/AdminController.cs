@@ -451,16 +451,21 @@ namespace SchoolDbProject.Controllers
         [HttpPost]
         public IActionResult AddStudentByForm(CustomStudent customStudent)
         {
+            HashSet<string> classes = new HashSet<string>();
+            foreach (var c in db.Classes)
+            {
+                classes.Add(c.ClassName);
+            }
             //if (HttpContext.Session.Keys.Contains("admin"))
             //{
-                customStudent.Password = AccountController.HashPassword(customStudent.Password);
+            customStudent.Password = AccountController.HashPassword(customStudent.Password);
                 Student student = new Student { StudentId = Convert.ToInt32(customStudent.StudentId), Email = customStudent.Email, 
                     Password = customStudent.Password };
                 int? classId = db.Classes.FirstOrDefault(c => c.ClassName == customStudent.ClassName).ClassId;
                 student.ClassId = classId;
                 db.Students.Add(student);
                 db.SaveChanges();
-            return View();
+            return View(new CustomStudent { Classes = new List<string>(classes) });
             //}
             //else
             //{
@@ -538,13 +543,87 @@ namespace SchoolDbProject.Controllers
 
         public IActionResult AddMarkByForm()
         {
-            return View();
+            //if (HttpContext.Session.Keys.Contains("admin"))
+            //{
+                // Admin admin = HttpContext.Session.Get<Admin>("admin");
+                var marksAnonA = db.Students
+                    .Join(db.Classes, s => s.ClassId, c => c.ClassId, (s, c) => new { c.ClassId, c.ClassName, Name = s.FirstName + " " + s.LastName })
+                    .Join(db.StudentSchedules, sc => sc.ClassId, ss => ss.ClassId, (sc, ss) => new { sc.Name, sc.ClassName, ss.SubjectId })
+                    .Join(db.Subjects, scss => scss.SubjectId, s => s.SubjectId, (scss, s) => new { scss.Name, scss.ClassName, s.SubjectName });
+
+                var classes = new HashSet<string>();
+                foreach (var m in marksAnonA)
+                {
+                    classes.Add(m.ClassName);
+                }
+
+                return View(new CustomTeacherMarks { Classes = new List<string>(classes), Students = new List<string>(), Subjects = new List<string>(), Marks = new List<byte?>() });
+            //}
+            //else
+            //{
+            //    return RedirectToAction("Logout", "Account");
+            //}
         }
 
         [HttpPost]
-        public IActionResult AddMarkByForm(CustomMarks customMarks)
+        public IActionResult AddMarkByForm(CustomTeacherMarks customTeacherMarks)
         {
-            return View();
+            //if (HttpContext.Session.Keys.Contains("admin"))
+            //{
+            // Admin admin = HttpContext.Session.Get<Admin>("admin");
+            var marksAnonA = db.Students
+                    .Join(db.Classes, s => s.ClassId, c => c.ClassId, (s, c) => new { c.ClassId, c.ClassName, Name = s.FirstName + " " + s.LastName, s.StudentId })
+                    .Join(db.StudentSchedules, sc => sc.ClassId, ss => ss.ClassId, (sc, ss) => new { sc.Name, sc.ClassName, ss.SubjectId, sc.StudentId })
+                    .Join(db.Subjects, scss => scss.SubjectId, s => s.SubjectId, (scss, s) => new { scss.Name, scss.ClassName, s.SubjectName, scss.StudentId, s.SubjectId });
+                var classes = new HashSet<string>();
+                foreach (var m in marksAnonA)
+                {
+                    classes.Add(m.ClassName);
+                }
+
+                var marksAnonB = marksAnonA.Where(m => m.ClassName == customTeacherMarks.SelectedClass);
+                var students = new HashSet<string>();
+                foreach (var m in marksAnonB)
+                {
+                    students.Add(m.Name + " (" + m.StudentId + ")");
+                }
+
+                var marksAnonC = marksAnonB.Where(m => m.Name + " (" + m.StudentId + ")" == customTeacherMarks.SelectedStudent);
+                var subjects = new HashSet<string>();
+                foreach (var m in marksAnonC)
+                {
+                    subjects.Add(m.SubjectName);
+                }
+
+                var marks = new List<byte?>();
+                if (customTeacherMarks.SelectedSubject != null)
+                {
+                    marks = new List<byte?>(new byte?[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+                }
+
+                if (customTeacherMarks.SelectedMark != null)
+                {
+                    int studendId = 0;
+                    int subjectId = 0;
+                    foreach (var m in marksAnonA)
+                    {
+                        if (customTeacherMarks.SelectedStudent == m.Name + " (" + m.StudentId + ")" && customTeacherMarks.SelectedSubject == m.SubjectName)
+                        {
+                            studendId = m.StudentId;
+                            subjectId = m.SubjectId;
+                        }
+                    }
+
+                    db.Database.ExecuteSqlInterpolated($"INSERT INTO Mark (Mark, StudentId, SubjectId) VALUES ({customTeacherMarks.SelectedMark}, {studendId}, {subjectId})");
+                    return View(new CustomTeacherMarks { Classes = new List<string>(classes), Students = new List<string>(), Subjects = new List<string>(), Marks = new List<byte?>() });
+                }
+
+                return View(new CustomTeacherMarks { Classes = new List<string>(classes), Students = new List<string>(students), Subjects = new List<string>(subjects), Marks = new List<byte?>(marks) });
+            //}
+            //else
+            //{
+            //    return RedirectToAction("Logout", "Account");
+            //}
         }
 
         public IActionResult AddMarkByXml()
@@ -554,6 +633,188 @@ namespace SchoolDbProject.Controllers
 
         [HttpPost]
         public IActionResult AddMarkByXml(IFormFile formFile)
+        {
+            return View();
+        }
+
+        public IActionResult AddLessonByForm()
+        {
+            //if (HttpContext.Session.Keys.Contains("admin"))
+            //{
+            var scheduleAnonA = db.Students
+                .Join(db.Classes, s => s.ClassId, c => c.ClassId, (s, c) => new { c.ClassName });
+            
+            var classes = new HashSet<string>();
+            foreach (var s in scheduleAnonA)
+            {
+                classes.Add(s.ClassName);
+            }
+
+            var subjects = new HashSet<string>();
+            foreach (var s in db.Subjects)
+            {
+                subjects.Add(s.SubjectName);
+            }
+
+            return View(new CustomLessons {
+                Classes = new List<string>(classes), 
+                Subjects = new List<string>(subjects), 
+                Teachers = new List<string>(), 
+                DaysOfWeek = new List<byte?>(), 
+                LessonNumbers = new List<byte?>(), 
+                Cabinets = new List<int?>() 
+            });
+            //}
+            //else
+            //{
+            //    return RedirectToAction("Logout", "Account");
+            //}
+        }
+
+        [HttpPost]
+        public IActionResult AddLessonByForm(CustomLessons lessons)
+        {
+            var classesWithStudents = db.Students
+                .Join(db.Classes, s => s.ClassId, c => c.ClassId, (s, c) => new { c.ClassName });
+            var classes = new HashSet<string>();
+            foreach (var c in classesWithStudents)
+            {
+                classes.Add(c.ClassName);
+            }
+
+            var subjects = new List<string>();
+            foreach (var s in db.Subjects)
+            {
+                subjects.Add(s.SubjectName);
+            }
+
+            var daysOfTheWeek = new List<byte?>();
+            var lessonNumbers = new List<byte?>();
+            if (lessons.SelectedClass != null && lessons.SelectedSubject != null && lessons.SelectedCabinet == null)
+            {
+                daysOfTheWeek = new List<byte?>() { 1, 2, 3, 4, 5 };
+                var selectedClass = db.Classes.FirstOrDefault(c => c.ClassName == lessons.SelectedClass);
+                HttpContext.Session.Set("selectedclass", selectedClass);
+                HttpContext.Session.Set("selectedsubject", lessons.SelectedSubject);
+                var daysWithCounts = db.StudentSchedules.Where(ss => ss.ClassId == selectedClass.ClassId)
+                .GroupBy(ss => ss.DayOfWeek)
+                .Select(ss => new { ss.Key, Count = ss.Count() });
+                foreach (var d in daysWithCounts)
+                {
+                    if (d.Count == 7)
+                    {
+                        daysOfTheWeek.Remove(d.Key);
+                    }
+                }
+            }
+
+            if (lessons.SelectedDayOfWeek != null && lessons.SelectedCabinet == null)
+            {
+                var selectedClass = db.Classes.FirstOrDefault(c => c.ClassName == lessons.SelectedClass);
+                var daysWithCounts = db.StudentSchedules.Where(ss => ss.ClassId == selectedClass.ClassId)
+                .GroupBy(ss => ss.DayOfWeek)
+                .Select(ss => new { ss.Key, Count = ss.Count() });
+                lessonNumbers = new List<byte?>() { 1, 2, 3, 4, 5, 6, 7 };
+                for (byte i = 1; i <= 7; i++)
+                {
+                    foreach (var d in daysWithCounts)
+                    {
+                        if (d.Key == lessons.SelectedDayOfWeek && i <= d.Count)
+                        {
+                            lessonNumbers.Remove(i);
+                        }
+                    }
+                }
+            }
+
+            var teachers = new List<string>();
+            if (lessons.SelectedLessonNumber != null)
+            {
+                var teachs = db.Teachers.ToList();
+                foreach (var t in teachs)
+                {
+                    bool isBusy = db.StudentSchedules.Any(ss => ss.TeacherId == t.TeacherId && ss.LessonNumber == lessons.SelectedLessonNumber &&
+                        ss.DayOfWeek == lessons.SelectedDayOfWeek);
+                    if (!isBusy)
+                    {
+                        teachers.Add(t.FirstName + " " + t.LastName + "(" + t.TeacherId + ")");
+                    }
+                }
+            }
+
+            var cabinets = new List<int?>();
+            if (lessons.SelectedTeacher != null)
+            {
+                var cabs = db.Cabinets.ToList();
+                foreach (var c in cabs)
+                {
+                    bool isBusy = db.StudentSchedules.Any(ss => ss.CabinetId == c.CabinetId &&
+                        ss.DayOfWeek == lessons.SelectedDayOfWeek &&
+                        ss.LessonNumber == lessons.SelectedLessonNumber);
+                    if (!isBusy)
+                    {
+                        cabinets.Add(c.CabinetId);
+                    }
+                }
+            }
+
+            if (lessons.SelectedCabinet != null)
+            {
+                var selectedClass = HttpContext.Session.Get<Class>("selectedclass");
+                var selectedSubject = HttpContext.Session.Get<string>("selectedsubject");
+                HttpContext.Session.Remove("selectedclass");
+                HttpContext.Session.Remove("selectedsubject");
+                int subjectId = 0;
+                int teacherId = 0;
+                foreach (var t in db.Teachers)
+                {
+                    if (lessons.SelectedTeacher == t.FirstName + " " + t.LastName + "(" + t.TeacherId + ")")
+                    {
+                        teacherId = t.TeacherId;
+                    }
+                }
+
+                foreach (var s in db.Subjects)
+                {
+                    if (selectedSubject == s.SubjectName)
+                    {
+                        subjectId = s.SubjectId;
+                    }
+                }
+
+                db.Database.ExecuteSqlInterpolated($"INSERT INTO StudentSchedule (LessonNumber, DayOfWeek, ClassId, CabinetId, SubjectId, TeacherId) VALUES ({lessons.SelectedLessonNumber}, {lessons.SelectedDayOfWeek}, {selectedClass.ClassId}, {lessons.SelectedCabinet}, {subjectId}, {teacherId})");
+                return View(new CustomLessons {
+                    Classes = new List<string>(classes),
+                    Subjects = new List<string>(subjects),
+                    Teachers = new List<string>(),
+                    Cabinets = new List<int?>(),
+                    DaysOfWeek = new List<byte?>(),
+                    LessonNumbers = new List<byte?>()
+                });
+            }
+
+            return View(new CustomLessons { 
+                Classes = new List<string>(classes), 
+                Subjects = new List<string>(subjects), 
+                Teachers = new List<string>(teachers), 
+                Cabinets = new List<int?>(cabinets), 
+                DaysOfWeek = new List<byte?>(daysOfTheWeek), 
+                LessonNumbers = new List<byte?>(lessonNumbers) 
+            });
+            
+            //else
+            //{
+            //    return RedirectToAction("Logout", "Account");
+            //}
+        }
+
+        public IActionResult AddLessonByXml()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddLessonByXml(IFormFile formFile)
         {
             return View();
         }

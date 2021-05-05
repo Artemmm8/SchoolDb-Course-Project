@@ -1,13 +1,125 @@
-﻿<!DOCTYPE html>
+﻿@model CustomTeacherMarks
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
-</head>
-<body>
-    <div>
-        @RenderBody()
-    </div>
-</body>
-</html>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .flex {
+        display: flex;
+    }
+
+    li {
+        list-style-type: none;
+        padding: 10px;
+    }
+
+    .selects li {
+        width: 250px;
+    }
+
+    .contforselects {
+        width: 100%;
+    }
+
+    #li1 {
+        width: 100%
+    }
+
+    #li2 {
+        width: 100%
+    }
+
+    #li3 {
+        width: 100%
+    }
+
+    #li4 {
+        width: 100%
+    }
+
+    .subm {
+        padding-left: 270px;
+    }
+</style>
+
+<div>
+    <form id="liform" asp-action="AddMarkByForm" asp-controller="Admin">
+        <div class="flex">
+            <div>
+                <ul>
+                    <li>
+                        Choose class:
+                    </li>
+                    <li>
+                        Choose student:
+                    </li>
+                    <li>
+                        Choose subject:
+                    </li>
+                    <li>
+                        Choose mark:
+                    </li>
+                </ul>
+            </div>
+
+            <div class="selects">
+                <ul>
+                    <li>
+                        @Html.DropDownListFor(sc => sc.SelectedClass, new SelectList(Model.Classes), " ", new { id = "li1", onchange = "getSelected1()", value = Model.SelectedClass })
+                    </li>
+                    <li>
+                        @Html.DropDownListFor(ss => ss.SelectedStudent, new SelectList(Model.Students), " ", new { id = "li2", onchange = "getSelected2()", value = Model.SelectedStudent })
+                    </li>
+                    <li>
+                        @Html.DropDownListFor(ss => ss.SelectedSubject, new SelectList(Model.Subjects), " ", new { id = "li3", onchange = "getSelected3()", value = Model.SelectedSubject })
+                    </li>
+                    <li>
+                        @Html.DropDownListFor(m => m.SelectedMark, new SelectList(Model.Marks), " ", new { id = "li4", onchange = "getSelected4()", value = Model.SelectedMark })
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="subm">
+            <input type="button" id="submbtn" value="Put A Mark" class="btn btn-outline-dark" disabled />
+        </div>
+    </form>
+</div>
+
+@section Scripts{
+    <script defer type="text/javascript">
+        submbtn.onclick = function () {
+            $('#li1').val(' ');
+            document.getElementById("liform").submit()
+        }
+
+        function getSelected1() {
+            $('#li2').val(' ');
+            $('#li3').val(' ');
+            $('#li4').val(' ');
+            document.getElementById("liform").submit()
+        }
+
+        function getSelected2() {
+            $('#li3').val(' ');
+            $('#li4').val(' ');
+            document.getElementById("liform").submit()
+        }
+
+        function getSelected3() {
+            $('#li4').val(' ');
+            document.getElementById("liform").submit()
+        }
+
+        function getSelected4() {
+            if ($('#li4 option:selected').text() == ' ') {
+                $("#submbtn").prop("disabled", true);
+            }
+            else {
+                $("#submbtn").prop("disabled", false);
+            }
+        }
+    </script>
+}

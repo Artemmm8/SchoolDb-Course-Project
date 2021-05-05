@@ -1,13 +1,164 @@
-﻿<!DOCTYPE html>
+﻿@model CustomLessons
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
-</head>
-<body>
-    <div>
-        @RenderBody()
-    </div>
-</body>
-</html>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .flex {
+        display: flex;
+    }
+
+    li {
+        list-style-type: none;
+        padding: 10px;
+    }
+
+    .selects li {
+        width: 250px;
+    }
+
+    .contforselects {
+        width: 100%;
+    }
+
+    #li1 {
+        width: 100%
+    }
+
+    #li2 {
+        width: 100%
+    }
+
+    #li3 {
+        width: 100%
+    }
+
+    #li4 {
+        width: 100%
+    }
+
+    #li5 {
+        width: 100%
+    }
+
+    #li6 {
+        width: 100%
+    }
+
+    .subm {
+        padding-left: 323px;
+    }
+</style>
+
+<div>
+    <form id="liform" asp-action="AddLessonByForm" asp-controller="Admin">
+        <div class="flex">
+            <div>
+                <ul>
+                    <li>
+                        Choose Class:
+                    </li>
+                    <li>
+                        Choose Subject:
+                    </li>
+                    <li>
+                        Choose Day Of Week:
+                    </li>
+                    <li>
+                        Choose Lesson Number:
+                    </li>
+                    <li>
+                        Choose Teacher:
+                    </li>
+                    <li>
+                        Choose Cabinet:
+                    </li>
+                </ul>
+            </div>
+
+            <div class="selects">
+                <ul>
+                    <li>
+                        @Html.DropDownListFor(cl => cl.SelectedClass, new SelectList(Model.Classes), " ", new { id = "li1", onchange = "getSelected1()", value = Model.SelectedClass })
+                    </li>
+                    <li>
+                        @Html.DropDownListFor(cl => cl.SelectedSubject, new SelectList(Model.Subjects), " ", new { id = "li2", onchange = "getSelected2()", value = Model.SelectedSubject })
+                    </li>
+                    <li>
+                        @Html.DropDownListFor(cl => cl.SelectedDayOfWeek, new SelectList(Model.DaysOfWeek), " ", new { id = "li3", onchange = "getSelected3()", value = Model.SelectedDayOfWeek })
+                    </li>
+                    <li>
+                        @Html.DropDownListFor(cl => cl.SelectedLessonNumber, new SelectList(Model.LessonNumbers), " ", new { id = "li4", onchange = "getSelected4()", value = Model.SelectedLessonNumber })
+                    </li>
+                    <li>
+                        @Html.DropDownListFor(cl => cl.SelectedTeacher, new SelectList(Model.Teachers), " ", new { id = "li5", onchange = "getSelected5()", value = Model.SelectedTeacher })
+                    </li>
+                    <li>
+                        @Html.DropDownListFor(cl => cl.SelectedCabinet, new SelectList(Model.Cabinets), " ", new { id = "li6", onchange = "getSelected6()", value = Model.SelectedCabinet })
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="subm">
+            <input type="button" id="submbtn" value="Add Lesson" class="btn btn-outline-dark" disabled />
+        </div>
+    </form>
+</div>
+
+@section Scripts{
+    <script defer type="text/javascript">
+        submbtn.onclick = function () {
+            $('#li1').val(' ');
+            $('#li2').val(' ');
+            document.getElementById("liform").submit()
+        }
+
+        function getSelected1() {
+            $('#li2').val(' ');
+            $('#li3').val(' ');
+            $('#li4').val(' ');
+            $('#li5').val(' ');
+            $('#li6').val(' ');
+            document.getElementById("liform").submit()
+        }
+
+        function getSelected2() {
+            $('#li3').val(' ');
+            $('#li4').val(' ');
+            $('#li5').val(' ');
+            $('#li6').val(' ');
+            document.getElementById("liform").submit()
+        }
+
+        function getSelected3() {
+            $('#li4').val(' ');
+            $('#li5').val(' ');
+            $('#li6').val(' ');
+            document.getElementById("liform").submit()
+        }
+
+        function getSelected4() {
+            $('#li5').val(' ');
+            $('#li6').val(' ');
+            document.getElementById("liform").submit()
+        }
+
+        function getSelected5() {
+            $('#li6').val(' ');
+            document.getElementById("liform").submit()
+        }
+
+        function getSelected6() {
+            if ($('#li6 option:selected').text() == ' ') {
+                $("#submbtn").prop("disabled", true);
+            }
+            else {
+
+                $("#submbtn").prop("disabled", false);
+            }
+        }
+    </script>
+}
