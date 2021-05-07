@@ -102,7 +102,7 @@ namespace SchoolDbProject.Controllers
                 var marksAnon = db.Students.Where(s => s.StudentId == student.StudentId)
                     .Join(db.Marks, s => s.StudentId, m => m.StudentId, (s, m) => new { Mark = m.Mark1, Subject = m.SubjectId })
                     .Join(db.Subjects, ms => ms.Subject, s => s.SubjectId, (ms, s) => new { ms.Mark, s.SubjectName });
-                List<CustomMarks> customMarks = new List<CustomMarks>();
+                List<CustomStudentMarks> customMarks = new List<CustomStudentMarks>();
                 List<byte?> marks = new List<byte?>();
                 HashSet<string> subjects = new HashSet<string>();
                 foreach (var m in marksAnon)
@@ -121,7 +121,7 @@ namespace SchoolDbProject.Controllers
                         }
                     }
 
-                    customMarks.Add(new CustomMarks { Mark = new List<byte?>(marks), Subject = s });
+                    customMarks.Add(new CustomStudentMarks { Mark = new List<byte?>(marks), Subject = s });
                 }
 
                 return View(customMarks);

@@ -1,4 +1,4 @@
-﻿@model Teacher
+﻿@model SchoolDbProject.LoginAndRegistraionModels.TeacherRegisterModel
 <style>
     .flex {
         display: flex;
@@ -7,6 +7,7 @@
     li {
         list-style-type: none;
         padding: 10px;
+        height: 50px;
     }
 
     * {
@@ -16,13 +17,12 @@
     }
 
     #submbtn {
-        width: 100%;
-        margin-top: 32px;
+        margin-left: 228px;
     }
 </style>
 
 <div>
-    <form asp-action="AddTeacherByForm" asp-controller="Admin">
+    <form id="liform" asp-action="AddTeacherByForm" asp-controller="Admin">
         <div class="flex">
             <div>
                 <ul>
@@ -35,24 +35,55 @@
                     <li>
                         <label asp-for="Password">Enter Password</label>
                     </li>
+                    <li>
+                        <label asp-for="ConfirmPassword">Confirm Password</label>
+                    </li>
                 </ul>
             </div>
             <div>
                 <ul>
                     <li>
-                        @Html.TextBoxFor(t => t.TeacherId, new { autocomplete = "off", value = "" })
+                        @Html.TextBoxFor(t => t.TeacherId, new { autocomplete = "off" })
                     </li>
                     <li>
-                        @Html.TextBoxFor(t => t.Email, new { autocomplete = "off", value = "" })
+                        @Html.TextBoxFor(t => t.Email, new { autocomplete = "off" })
                     </li>
                     <li>
                         @Html.EditorFor(t => t.Password)
                     </li>
+                    <li>
+                        @Html.EditorFor(t => t.ConfirmPassword)
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>
+                        <div class="text-danger">@Html.ValidationMessageFor(m => m.TeacherId)</div>
+                    </li>
+                    <li>
+                        <div class="text-danger">@Html.ValidationMessageFor(m => m.Email)</div>
+                    </li>
+                    <li>
+                        <div class="text-danger">@Html.ValidationMessageFor(m => m.Password)</div>
+                    </li>
+                    <li>
+                        <div class="text-danger">@Html.ValidationMessageFor(m => m.ConfirmPassword)</div>
+                    </li>
                 </ul>
             </div>
         </div>
+        <div class="text-danger">
+            @ViewBag.ErrorMessage
+        </div>
         <div>
-            <input id="submbtn" type="submit" value="Add Teacher" class="btn btn-outline-dark" />
+            <input id="submbtn" type="button" value="Add Teacher" class="btn btn-outline-dark" />
         </div>
     </form>
 </div>
+
+<script defer type="text/javascript">
+    submbtn.onclick = function () {
+        document.getElementById("liform").submit();
+    }
+</script>

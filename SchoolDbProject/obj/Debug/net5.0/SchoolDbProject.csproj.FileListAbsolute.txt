@@ -73,7 +73,6 @@ F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\D
 F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\Razor\Views\Account\StudentRegister.cshtml.g.cs
 F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\Razor\Views\Account\TeacherLogin.cshtml.g.cs
 F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\Razor\Views\Account\TeacherRegister.cshtml.g.cs
-F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\SchoolDbProject.csprojAssemblyReference.cache
 F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\Razor\Views\Admin\Index.cshtml.g.cs
 F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\Razor\Views\Student\Index.cshtml.g.cs
 F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\Razor\Views\Student\Marks.cshtml.g.cs

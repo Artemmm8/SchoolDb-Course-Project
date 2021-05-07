@@ -8,6 +8,7 @@
     li {
         list-style-type: none;
         padding: 10px;
+        height: 50px;
     }
 
     * {
@@ -17,13 +18,12 @@
     }
 
     #submbtn {
-        width: 100%;
-        margin-top: 20px;
+        margin-left: 305px;
     }
 </style>
 
 <div>
-    <form asp-action="AddClassByForm" asp-controller="Admin">
+    <form id="liform" asp-action="AddClassByForm" asp-controller="Admin">
         <div class="flex">
             <div>
                 <ul>
@@ -45,9 +45,28 @@
                     </li>
                 </ul>
             </div>
+            <div>
+                <ul>
+                    <li>
+                        <div class="text-danger">@Html.ValidationMessageFor(c => c.ClassName)</div>
+                    </li>
+                    <li>
+                        <div class="text-danger">@Html.ValidationMessageFor(c => c.NumberOfStudents)</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-danger">
+            @ViewBag.ErrorMessage
         </div>
         <div>
-            <input id="submbtn" type="submit" value="Add Class" class="btn btn-outline-dark" />
+            <input id="submbtn" type="button" value="Add Class" class="btn btn-outline-dark" />
         </div>
     </form>
 </div>
+
+<script defer type="text/javascript">
+    submbtn.onclick = function () {
+        document.getElementById("liform").submit();
+    }
+</script>

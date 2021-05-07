@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SchoolDbProject.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace SchoolDbProject.LoginAndRegistraionModels
     public class StudentRegisterModel
     {
         [Required(ErrorMessage = "This field is required.")]
+        [GreaterThanZero(ErrorMessage = "Only positive Id allowed.")]
         public int StudentId { get; set; }
 
         [Required(ErrorMessage = "This field is required.")]

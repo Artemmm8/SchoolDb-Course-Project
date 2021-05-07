@@ -7,6 +7,7 @@
     li {
         list-style-type: none;
         padding: 10px;
+        height: 50px;
     }
 
     * {
@@ -16,16 +17,16 @@
     }
 
     #submbtn {
-        width: 328px;
+        margin-left: 227px;
     }
 
-    #li4 {
+    #li5 {
         width: 100%;
     }
 </style>
 
 <div>
-    <form asp-action="AddStudentByForm" asp-controller="Admin">
+    <form id="liform" asp-action="AddStudentByForm" asp-controller="Admin">
         <div class="flex">
             <div>
                 <ul>
@@ -39,6 +40,9 @@
                         <label asp-for="Password">Enter Password</label>
                     </li>
                     <li>
+                        <label asp-for="ConfirmPassword">Confirm Password</label>
+                    </li>
+                    <li>
                         <label asp-for="ClassName">Choose Class</label>
                     </li>
                 </ul>
@@ -46,33 +50,50 @@
             <div>
                 <ul>
                     <li>
-                        @Html.TextBoxFor(s => s.StudentId, new { autocomplete = "off", onchange = "getSelected()", id = "li1" })
+                        @Html.TextBoxFor(s => s.StudentId, new { autocomplete = "off" })
                     </li>
                     <li>
-                        @Html.TextBoxFor(s => s.Email, new { autocomplete = "off", onchange = "getSelected()", id = "li2" })
+                        @Html.TextBoxFor(s => s.Email, new { autocomplete = "off" })
                     </li>
                     <li>
-                        @Html.EditorFor(s => s.Password, new { id = "li3" })
+                        @Html.EditorFor(s => s.Password)
                     </li>
                     <li>
-                        @Html.DropDownListFor(cs => cs.ClassName, new SelectList(Model.Classes), " ", new { onchange = "getSelected()", id = "li4" })
+                        @Html.EditorFor(s => s.ConfirmPassword)
+                    </li>
+                    <li>
+                        @Html.DropDownListFor(cs => cs.ClassName, new SelectList(Model.Classes), " ", new { id = "li5" })
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>
+                        <div class="text-danger">@Html.ValidationMessageFor(s => s.StudentId)</div>
+                    </li>
+                    <li>
+                        <div class="text-danger">@Html.ValidationMessageFor(s => s.Email)</div>
+                    </li>
+                    <li>
+                        <div class="text-danger">@Html.ValidationMessageFor(s => s.Password)</div>
+                    </li>
+                    <li>
+                        <div class="text-danger">@Html.ValidationMessageFor(s => s.ConfirmPassword)</div>
                     </li>
                 </ul>
             </div>
         </div>
+        <div class="text-danger">
+            @ViewBag.ErrorMessage
+        </div>
         <div>
-            <input id="submbtn" type="submit" value="Add Student" class="btn btn-outline-dark" disabled />
+            <input id="submbtn" type="button" value="Add Student" class="btn btn-outline-dark" />
         </div>
     </form>
 </div>
     
 <script defer type="text/javascript">
-    function getSelected() {
-        if ($('#li4 option:selected').text() == ' ' || $('#li1').val() == '' || $('#li2').val() == '' || $('#li3').val() == '') {
-            $("#submbtn").prop("disabled", true);
-        }
-        else {
-            $("#submbtn").prop("disabled", false);
-        }
+    submbtn.onclick = function () {
+        document.getElementById("liform").submit();
     }
 </script>

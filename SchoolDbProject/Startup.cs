@@ -23,11 +23,11 @@ namespace SchoolDbProject
         {
             string connection = Configuration.GetConnectionString("CustomConnection");
             services.AddDbContext<SchoolDbContext>(options => options.UseSqlServer(connection));
-            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            //    .AddCookie(options =>
-            //    {
-            //        options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Admin/Index");
-            //    });
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Home/Index");
+                });
 
             services.AddRazorPages()
                 .AddMvcOptions(options =>
@@ -42,7 +42,7 @@ namespace SchoolDbProject
             {
                 options.IdleTimeout = TimeSpan.FromSeconds(200000);
                 options.Cookie.Name = ".MyKuki";
-                options.Cookie.IsEssential = false;
+                options.Cookie.IsEssential = true;
             });
 
             services.AddControllersWithViews();
@@ -64,8 +64,8 @@ namespace SchoolDbProject
 
             app.UseRouting();
 
-            // app.UseAuthentication();
-            // app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseSession();
 
@@ -73,7 +73,7 @@ namespace SchoolDbProject
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Admin}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

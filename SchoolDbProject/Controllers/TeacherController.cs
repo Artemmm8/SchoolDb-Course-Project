@@ -121,7 +121,7 @@ namespace SchoolDbProject.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult Marks(CustomTeacherMarks customTeacherMarks)
+        public IActionResult Marks(CustomTeacherMarks customMarks)
         {
             if (HttpContext.Session.Keys.Contains("teacher"))
             {
@@ -137,14 +137,14 @@ namespace SchoolDbProject.Controllers
                     classes.Add(m.ClassName);
                 }
 
-                var marksAnonB = marksAnonA.Where(m => m.ClassName == customTeacherMarks.SelectedClass);
+                var marksAnonB = marksAnonA.Where(m => m.ClassName == customMarks.SelectedClass);
                 var students = new HashSet<string>();
                 foreach (var m in marksAnonB)
                 {
                     students.Add(m.Name + " (" + m.StudentId + ")");
                 }
 
-                var marksAnonC = marksAnonB.Where(m => m.Name + " (" + m.StudentId + ")" == customTeacherMarks.SelectedStudent);
+                var marksAnonC = marksAnonB.Where(m => m.Name + " (" + m.StudentId + ")" == customMarks.SelectedStudent);
                 var subjects = new HashSet<string>();
                 foreach (var m in marksAnonC)
                 {
@@ -152,25 +152,25 @@ namespace SchoolDbProject.Controllers
                 }
 
                 var marks = new List<byte?>();
-                if (customTeacherMarks.SelectedSubject != null)
+                if (customMarks.SelectedSubject != null)
                 {
                     marks = new List<byte?>(new byte?[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
                 }
 
-                if (customTeacherMarks.SelectedMark != null)
+                if (customMarks.SelectedMark != null)
                 {
                     int studendId = 0;
                     int subjectId = 0;
                     foreach (var m in marksAnonA)
                     {
-                        if (customTeacherMarks.SelectedStudent == m.Name + " (" + m.StudentId + ")" && customTeacherMarks.SelectedSubject == m.SubjectName)
+                        if (customMarks.SelectedStudent == m.Name + " (" + m.StudentId + ")" && customMarks.SelectedSubject == m.SubjectName)
                         {
                             studendId = m.StudentId;
                             subjectId = m.SubjectId;
                         }
                     }
 
-                    db.Database.ExecuteSqlInterpolated($"INSERT INTO Mark (Mark, StudentId, SubjectId) VALUES ({customTeacherMarks.SelectedMark}, {studendId}, {subjectId})");
+                    db.Database.ExecuteSqlInterpolated($"INSERT INTO Mark (Mark, StudentId, SubjectId) VALUES ({customMarks.SelectedMark}, {studendId}, {subjectId})");
                     return View(new CustomTeacherMarks { Classes = new List<string>(classes), Students = new List<string>(), Subjects = new List<string>(), Marks = new List<byte?>() });
                 }
 
