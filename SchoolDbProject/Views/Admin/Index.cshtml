@@ -159,25 +159,25 @@
                 ___
             </li>
             <li>
-                @Html.ActionLink("Export", "ExportSubjects", "Admin")
+                @Html.ActionLink("Export", "ExportSubjects", "Admin", new { name = "subjects.xml" })
             </li>
             <li>
-                @Html.ActionLink("Export", "ExportClasses", "Admin")
+                @Html.ActionLink("Export", "ExportClasses", "Admin", new { name = "classes.xml" })
             </li>
             <li>
-                @Html.ActionLink("Export", "ExportCabinets", "Admin")
+                @Html.ActionLink("Export", "ExportCabinets", "Admin", new { name = "cabinets.xml" })
             </li>
             <li>
-                @Html.ActionLink("Export", "ExportTeachers", "Admin")
+                @Html.ActionLink("Export", "ExportTeachers", "Admin", new { name = "teachers.xml" })
             </li>
             <li>
-                @Html.ActionLink("Export", "ExportStudents", "Admin")
+                @Html.ActionLink("Export", "ExportStudents", "Admin", new { name = "students.xml" })
             </li>
             <li>
-                @Html.ActionLink("Export", "ExportMarks", "Admin")
+                @Html.ActionLink("Export", "ExportMarks", "Admin", new { name = "marks.xml" })
             </li>
             <li>
-                @Html.ActionLink("Export", "ExportLessons", "Admin")
+                @Html.ActionLink("Export", "ExportLessons", "Admin", new { name = "lessons.xml" })
             </li>
         </ul>
     </div>

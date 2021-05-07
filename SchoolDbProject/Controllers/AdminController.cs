@@ -928,38 +928,283 @@ namespace SchoolDbProject.Controllers
             return View();
         }
 
-        // [Authorize]
-        public IActionResult Export()
+        #region Export Data
+        [Authorize]
+        public FileContentResult ExportSubjects(string name)
         {
-            if (HttpContext.Session.Keys.Contains("admin"))
+            XmlDocument doc = new XmlDocument();
+            XmlNode docNode = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            doc.AppendChild(docNode);
+            XmlNode subjectsNode = doc.CreateElement("subjects");
+            doc.AppendChild(subjectsNode);
+            foreach (var item in db.Subjects)
             {
-                XmlDocument doc = new XmlDocument();
-                XmlNode docNode = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
-                doc.AppendChild(docNode);
-                XmlNode classesNode = doc.CreateElement("classes");
-                doc.AppendChild(classesNode);
-                foreach (var item in db.Classes)
-                {
-                    XmlNode classNode = doc.CreateElement("class");
-                    classesNode.AppendChild(classNode);
-                    XmlNode idNode = doc.CreateElement("ClassId");
-                    idNode.AppendChild(doc.CreateTextNode(item.ClassId.ToString()));
-                    classNode.AppendChild(idNode);
-                    XmlNode nameNode = doc.CreateElement("ClassName");
-                    nameNode.AppendChild(doc.CreateTextNode(item.ClassName));
-                    classNode.AppendChild(nameNode);
-                    XmlNode numNode = doc.CreateElement("ClassId");
-                    numNode.AppendChild(doc.CreateTextNode(item.NumberOfStudents.ToString()));
-                    classNode.AppendChild(numNode);
-                }
+                XmlNode subjectNode = doc.CreateElement("subject");
+                subjectsNode.AppendChild(subjectNode);
+                XmlNode idNode = doc.CreateElement("SubjectId");
+                idNode.AppendChild(doc.CreateTextNode(item.SubjectId.ToString()));
+                subjectNode.AppendChild(idNode);
+                XmlNode nameNode = doc.CreateElement("SubjectName");
+                nameNode.AppendChild(doc.CreateTextNode(item.SubjectName));
+                subjectNode.AppendChild(nameNode);
+            }
 
-                doc.Save("classes.xml");
-                return RedirectToAction("Index", "Admin");
-            }
-            else
+            doc.Save("subjects.xml");
+            var data = System.IO.File.ReadAllBytes(name);
+            var result = new FileContentResult(data, "application/octet-stream")
             {
-                return RedirectToAction("Logout", "Account");
-            }
+                FileDownloadName = "subjects.xml"
+            };
+
+            return result;
         }
+
+        [Authorize]
+        public FileContentResult ExportClasses(string name)
+        {
+            XmlDocument doc = new XmlDocument();
+            XmlNode docNode = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            doc.AppendChild(docNode);
+            XmlNode classesNode = doc.CreateElement("classes");
+            doc.AppendChild(classesNode);
+            foreach (var item in db.Classes)
+            {
+                XmlNode classNode = doc.CreateElement("class");
+                classesNode.AppendChild(classNode);
+                XmlNode idNode = doc.CreateElement("ClassId");
+                idNode.AppendChild(doc.CreateTextNode(item.ClassId.ToString()));
+                classNode.AppendChild(idNode);
+                XmlNode nameNode = doc.CreateElement("ClassName");
+                nameNode.AppendChild(doc.CreateTextNode(item.ClassName));
+                classNode.AppendChild(nameNode);
+                XmlNode numNode = doc.CreateElement("NumberOfStudents");
+                numNode.AppendChild(doc.CreateTextNode(item.NumberOfStudents.ToString()));
+                classNode.AppendChild(numNode);
+            }
+
+            doc.Save("classes.xml");
+            var data = System.IO.File.ReadAllBytes(name);
+            var result = new FileContentResult(data, "application/octet-stream")
+            {
+                FileDownloadName = "classes.xml"
+            };
+
+            return result;
+        }
+
+        [Authorize]
+        public FileContentResult ExportCabinets(string name)
+        {
+            XmlDocument doc = new XmlDocument();
+            XmlNode docNode = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            doc.AppendChild(docNode);
+            XmlNode cabinetsNode = doc.CreateElement("cabinets");
+            doc.AppendChild(cabinetsNode);
+            foreach (var item in db.Cabinets)
+            {
+                XmlNode cabinetNode = doc.CreateElement("cabinet");
+                cabinetsNode.AppendChild(cabinetNode);
+                XmlNode idNode = doc.CreateElement("CabinetId");
+                idNode.AppendChild(doc.CreateTextNode(item.CabinetId.ToString()));
+                cabinetNode.AppendChild(idNode);
+                XmlNode numNode = doc.CreateElement("NumberOfSeats");
+                numNode.AppendChild(doc.CreateTextNode(item.NumberOfSeats.ToString()));
+                cabinetNode.AppendChild(numNode);
+            }
+
+            doc.Save("cabinets.xml");
+            var data = System.IO.File.ReadAllBytes(name);
+            var result = new FileContentResult(data, "application/octet-stream")
+            {
+                FileDownloadName = "cabinets.xml"
+            };
+
+            return result;
+        }
+
+        [Authorize]
+        public FileContentResult ExportTeachers(string name)
+        {
+            XmlDocument doc = new XmlDocument();
+            XmlNode docNode = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            doc.AppendChild(docNode);
+            XmlNode teachersNode = doc.CreateElement("teachers");
+            doc.AppendChild(teachersNode);
+            foreach (var item in db.Teachers)
+            {
+                XmlNode teacherNode = doc.CreateElement("teacher");
+                teachersNode.AppendChild(teacherNode);
+
+                XmlNode idNode = doc.CreateElement("TeacherId");
+                idNode.AppendChild(doc.CreateTextNode(item.TeacherId.ToString()));
+                teacherNode.AppendChild(idNode);
+
+                XmlNode firstNameNode = doc.CreateElement("FirstName");
+                firstNameNode.AppendChild(doc.CreateTextNode(item.FirstName));
+                teacherNode.AppendChild(firstNameNode);
+
+                XmlNode lastNameNode = doc.CreateElement("LastName");
+                lastNameNode.AppendChild(doc.CreateTextNode(item.LastName));
+                teacherNode.AppendChild(lastNameNode);
+
+                XmlNode emailNode = doc.CreateElement("Email");
+                emailNode.AppendChild(doc.CreateTextNode(item.Email));
+                teacherNode.AppendChild(emailNode);
+
+                XmlNode passNode = doc.CreateElement("Password");
+                passNode.AppendChild(doc.CreateTextNode(item.Password));
+                teacherNode.AppendChild(passNode);
+
+                XmlNode phoneNode = doc.CreateElement("PhoneNumber");
+                phoneNode.AppendChild(doc.CreateTextNode(item.PhoneNumber));
+                teacherNode.AppendChild(phoneNode);
+            }
+
+            doc.Save("teachers.xml");
+            var data = System.IO.File.ReadAllBytes(name);
+            var result = new FileContentResult(data, "application/octet-stream")
+            {
+                FileDownloadName = "teachers.xml"
+            };
+
+            return result;
+        }
+
+        [Authorize]
+        public FileContentResult ExportStudents(string name)
+        {
+            XmlDocument doc = new XmlDocument();
+            XmlNode docNode = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            doc.AppendChild(docNode);
+            XmlNode studentsNode = doc.CreateElement("students");
+            doc.AppendChild(studentsNode);
+            foreach (var item in db.Students)
+            {
+                XmlNode studentNode = doc.CreateElement("student");
+                studentsNode.AppendChild(studentNode);
+
+                XmlNode idNode = doc.CreateElement("StudentId");
+                idNode.AppendChild(doc.CreateTextNode(item.StudentId.ToString()));
+                studentNode.AppendChild(idNode);
+
+                XmlNode firstNameNode = doc.CreateElement("FirstName");
+                firstNameNode.AppendChild(doc.CreateTextNode(item.FirstName));
+                studentNode.AppendChild(firstNameNode);
+
+                XmlNode lastNameNode = doc.CreateElement("LastName");
+                lastNameNode.AppendChild(doc.CreateTextNode(item.LastName));
+                studentNode.AppendChild(lastNameNode);
+
+                XmlNode emailNode = doc.CreateElement("Email");
+                emailNode.AppendChild(doc.CreateTextNode(item.Email));
+                studentNode.AppendChild(emailNode);
+
+                XmlNode passNode = doc.CreateElement("Password");
+                passNode.AppendChild(doc.CreateTextNode(item.Password));
+                studentNode.AppendChild(passNode);
+
+                XmlNode phoneNode = doc.CreateElement("PhoneNumber");
+                phoneNode.AppendChild(doc.CreateTextNode(item.PhoneNumber));
+                studentNode.AppendChild(phoneNode);
+
+                XmlNode classIdNode = doc.CreateElement("ClassId");
+                classIdNode.AppendChild(doc.CreateTextNode(item.ClassId.ToString()));
+                studentNode.AppendChild(classIdNode);
+            }
+
+            doc.Save("students.xml");
+            var data = System.IO.File.ReadAllBytes(name);
+            var result = new FileContentResult(data, "application/octet-stream")
+            {
+                FileDownloadName = "students.xml"
+            };
+
+            return result;
+        }
+
+        [Authorize]
+        public FileContentResult ExportMarks(string name)
+        {
+            XmlDocument doc = new XmlDocument();
+            XmlNode docNode = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            doc.AppendChild(docNode);
+            XmlNode marksNode = doc.CreateElement("marks");
+            doc.AppendChild(marksNode);
+            foreach (var item in db.Marks)
+            {
+                XmlNode markNode = doc.CreateElement("mark");
+                marksNode.AppendChild(markNode);
+
+                XmlNode markNumNode = doc.CreateElement("Mark");
+                markNumNode.AppendChild(doc.CreateTextNode(item.Mark1.ToString()));
+                markNode.AppendChild(markNumNode);
+
+                XmlNode stIdNode = doc.CreateElement("StudentId");
+                stIdNode.AppendChild(doc.CreateTextNode(item.StudentId.ToString()));
+                markNode.AppendChild(stIdNode);
+
+                XmlNode sbIdNode = doc.CreateElement("SubjectId");
+                sbIdNode.AppendChild(doc.CreateTextNode(item.SubjectId.ToString()));
+                markNode.AppendChild(sbIdNode);
+            }
+
+            doc.Save("marks.xml");
+            var data = System.IO.File.ReadAllBytes(name);
+            var result = new FileContentResult(data, "application/octet-stream")
+            {
+                FileDownloadName = "marks.xml"
+            };
+
+            return result;
+        }
+
+        [Authorize]
+        public FileContentResult ExportLessons(string name)
+        {
+            XmlDocument doc = new XmlDocument();
+            XmlNode docNode = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
+            doc.AppendChild(docNode);
+            XmlNode lessonsNode = doc.CreateElement("lessons");
+            doc.AppendChild(lessonsNode);
+            foreach (var item in db.StudentSchedules)
+            {
+                XmlNode lessonNode = doc.CreateElement("lesson");
+                lessonsNode.AppendChild(lessonNode);
+
+                XmlNode lessonNumNode = doc.CreateElement("LessonNumber");
+                lessonNumNode.AppendChild(doc.CreateTextNode(item.LessonNumber.ToString()));
+                lessonNode.AppendChild(lessonNumNode);
+
+                XmlNode dayNode = doc.CreateElement("DayOfWeek");
+                dayNode.AppendChild(doc.CreateTextNode(item.DayOfWeek.ToString()));
+                lessonNode.AppendChild(dayNode);
+
+                XmlNode classIdNode = doc.CreateElement("ClassId");
+                classIdNode.AppendChild(doc.CreateTextNode(item.ClassId.ToString()));
+                lessonNode.AppendChild(classIdNode);
+
+                XmlNode cabIdNode = doc.CreateElement("CabinetId");
+                cabIdNode.AppendChild(doc.CreateTextNode(item.CabinetId.ToString()));
+                lessonNode.AppendChild(cabIdNode);
+
+                XmlNode sbIdNode = doc.CreateElement("SubjectId");
+                sbIdNode.AppendChild(doc.CreateTextNode(item.SubjectId.ToString()));
+                lessonNode.AppendChild(sbIdNode);
+
+                XmlNode teachIdNode = doc.CreateElement("TeacherId");
+                teachIdNode.AppendChild(doc.CreateTextNode(item.TeacherId.ToString()));
+                lessonNode.AppendChild(teachIdNode);
+            }
+
+            doc.Save("lessons.xml");
+            var data = System.IO.File.ReadAllBytes(name);
+            var result = new FileContentResult(data, "application/octet-stream")
+            {
+                FileDownloadName = "lessons.xml"
+            };
+
+            return result;
+        }
+        #endregion Export Data
     }
 }
