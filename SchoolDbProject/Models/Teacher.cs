@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SchoolDbProject.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -12,7 +13,7 @@ namespace SchoolDbProject.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         
-        [EmailAddress(ErrorMessage = "Incorrect Email Format.")]
+        [MicrosoftEmail(ErrorMessage = "Incorrect Email Format.")]
         public string Email { get; set; }
 
         public string Password { get; set; }

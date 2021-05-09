@@ -1,16 +1,17 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using SchoolDbProject.LoginAndRegistraionModels;
+using Microsoft.AspNetCore.Authorization;
+using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SchoolDbProject.Models;
-using System;
-using System.IO;
-using System.Collections.Generic;
+using System.Threading;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Hosting;
 using System.Xml;
-using System.Threading.Tasks;
-using SchoolDbProject.LoginAndRegistraionModels;
+using System.IO;
+using System;
 
 namespace SchoolDbProject.Controllers
 {
@@ -23,6 +24,25 @@ namespace SchoolDbProject.Controllers
         {
             this.db = db;
             _appEnvironment = appEnvironment;
+        }
+
+        public string ValidateXMLUsingXSD(string xmlPath, string xsdPath)
+        {
+            try
+            {
+                XmlReaderSettings settings = new XmlReaderSettings();
+                settings.ValidationType = ValidationType.Schema;
+                settings.Schemas.Add(null, XmlReader.Create(xsdPath));
+
+                XmlReader xmlReader = XmlReader.Create(xmlPath, settings);
+                XmlDocument xmlDocument = new XmlDocument();
+                xmlDocument.Load(xmlReader);
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         [Authorize]
@@ -45,6 +65,9 @@ namespace SchoolDbProject.Controllers
                 return View();
             }
         }
+
+        // Finished
+        #region Add By Form
 
         [Authorize]
         public IActionResult AddSubjectByForm()
@@ -88,75 +111,6 @@ namespace SchoolDbProject.Controllers
             {
                 return RedirectToAction("Logout", "Account");
             }
-        }
-
-        // [Authorize]
-        public IActionResult AddSubjectByXml()
-        {
-            //if (HttpContext.Session.Keys.Contains("admin"))
-            //{
-
-
-            return View();
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Logout", "Account");
-            //}
-        }
-
-        // [Authorize]
-        [HttpPost]
-        public IActionResult AddSubjectByXml(IFormFile file)
-        {
-            //if (HttpContext.Session.Keys.Contains("admin"))
-            //{
-            var path = _appEnvironment.WebRootPath + "\\Files\\" + file.FileName;
-            using (var fileStream = new FileStream(path, FileMode.Create))
-            {
-                file.CopyTo(fileStream);
-            }
-
-            if (System.IO.File.Exists(path))
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(path);
-                XmlNodeList dataNodes = doc.SelectNodes("/subjects/subject");
-                int count = 0;
-                foreach (XmlNode item in dataNodes)
-                {
-                    int id = Convert.ToInt32(item.SelectSingleNode("SubjectId").InnerText);
-                    Subject subject = db.Subjects.FirstOrDefault(s => s.SubjectId == id);
-                    if (subject == null)
-                    {
-                        count++;
-                    }
-                }
-
-                if (count == dataNodes.Count)
-                {
-                    foreach (XmlNode item in dataNodes)
-                    {
-                        int id = Convert.ToInt32(item.SelectSingleNode("SubjectId").InnerText);
-                        string name = item.SelectSingleNode("SubjectName").InnerText;
-                        db.Subjects.Add(new Subject { SubjectId = id, SubjectName = name });
-                        db.SaveChanges();
-                    }
-                }
-                else
-                {
-                    ViewBag.Error = "xml doc has incorrect data.";
-                }
-
-                System.IO.File.Delete(path);
-            }
-
-            return View();
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Logout", "Account");
-            //}
         }
 
         [Authorize]
@@ -204,75 +158,6 @@ namespace SchoolDbProject.Controllers
             }
         }
 
-        // [Authorize]
-        public IActionResult AddClassByXml()
-        {
-            //if (HttpContext.Session.Keys.Contains("admin"))
-            //{
-
-            return View();
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Logout", "Account");
-            //}
-        }
-
-        // [Authorize]
-        [HttpPost]
-        public IActionResult AddClassByXml(IFormFile file)
-        {
-            //if (HttpContext.Session.Keys.Contains("admin"))
-            //{
-            var path = _appEnvironment.WebRootPath + "\\Files\\" + file.FileName;
-            using (var fileStream = new FileStream(path, FileMode.Create))
-            {
-                file.CopyTo(fileStream);
-            }
-
-            if (System.IO.File.Exists(path))
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(path);
-                XmlNodeList dataNodes = doc.SelectNodes("/classes/class");
-                int count = 0;
-                foreach (XmlNode item in dataNodes)
-                {
-                    int id = Convert.ToInt32(item.SelectSingleNode("ClassId").InnerText);
-                    Class class1 = db.Classes.FirstOrDefault(c => c.ClassId == id);
-                    if (class1 == null)
-                    {
-                        count++;
-                    }
-                }
-
-                if (count == dataNodes.Count)
-                {
-                    foreach (XmlNode item in dataNodes)
-                    {
-                        int id = Convert.ToInt32(item.SelectSingleNode("ClassId").InnerText);
-                        string name = item.SelectSingleNode("ClassName").InnerText;
-                        byte numberOfStudents = Convert.ToByte(item.SelectSingleNode("NumberOfStudents").InnerText);
-                        db.Classes.Add(new Class { ClassId = id, ClassName = name, NumberOfStudents = numberOfStudents });
-                        db.SaveChanges();
-                    }
-                }
-                else
-                {
-                    ViewBag.Error = "xml doc has incorrect data.";
-                }
-
-                System.IO.File.Delete(path);
-            }
-
-            return View();
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Logout", "Account");
-            //}
-        }
-
         [Authorize]
         public IActionResult AddCabinetByForm()
         {
@@ -313,73 +198,6 @@ namespace SchoolDbProject.Controllers
             {
                 return RedirectToAction("Logout", "Account");
             }
-        }
-
-        // [Authorize]
-        public IActionResult AddCabinetByXml()
-        {
-            //if (HttpContext.Session.Keys.Contains("admin"))
-            //{
-            return View();
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Logout", "Account");
-            //}
-        }
-
-        // [Authorize]
-        [HttpPost]
-        public IActionResult AddCabinetByXml(IFormFile file)
-        {
-            //if (HttpContext.Session.Keys.Contains("admin"))
-            //{
-            var path = _appEnvironment.WebRootPath + "\\Files\\" + file.FileName;
-            using (var fileStream = new FileStream(path, FileMode.Create))
-            {
-                file.CopyTo(fileStream);
-            }
-
-            if (System.IO.File.Exists(path))
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(path);
-                XmlNodeList dataNodes = doc.SelectNodes("/cabinets/cabinet");
-                int count = 0;
-                foreach (XmlNode item in dataNodes)
-                {
-                    int id = Convert.ToInt32(item.SelectSingleNode("CabinetId").InnerText);
-                    Cabinet cabinet = db.Cabinets.FirstOrDefault(c => c.CabinetId == id);
-                    if (cabinet == null)
-                    {
-                        count++;
-                    }
-                }
-
-                if (count == dataNodes.Count)
-                {
-                    foreach (XmlNode item in dataNodes)
-                    {
-                        int id = Convert.ToInt32(item.SelectSingleNode("CabinetId").InnerText);
-                        byte numberOfSeats = Convert.ToByte(item.SelectSingleNode("NumberOfSeats").InnerText);
-                        db.Cabinets.Add(new Cabinet { CabinetId = id, NumberOfSeats = numberOfSeats });
-                        db.SaveChanges();
-                    }
-                }
-                else
-                {
-                    ViewBag.Error = "xml doc has incorrect data.";
-                }
-
-                System.IO.File.Delete(path);
-            }
-
-            return View();
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Logout", "Account");
-            //}
         }
 
         [Authorize]
@@ -429,60 +247,6 @@ namespace SchoolDbProject.Controllers
             {
                 return RedirectToAction("Logout", "Account");
             }
-        }
-
-        // [Authorize]
-        [HttpPost]
-        public IActionResult AddTeacherByXml(IFormFile file)
-        {
-            //if (HttpContext.Session.Keys.Contains("admin"))
-            //{
-            var path = _appEnvironment.WebRootPath + "\\Files\\" + file.FileName;
-            using (var fileStream = new FileStream(path, FileMode.Create))
-            {
-                file.CopyTo(fileStream);
-            }
-
-            if (System.IO.File.Exists(path))
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(path);
-                XmlNodeList dataNodes = doc.SelectNodes("/cabinets/cabinet");
-                int count = 0;
-                foreach (XmlNode item in dataNodes)
-                {
-                    int id = Convert.ToInt32(item.SelectSingleNode("CabinetId").InnerText);
-                    Cabinet cabinet = db.Cabinets.FirstOrDefault(c => c.CabinetId == id);
-                    if (cabinet == null)
-                    {
-                        count++;
-                    }
-                }
-
-                if (count == dataNodes.Count)
-                {
-                    foreach (XmlNode item in dataNodes)
-                    {
-                        int id = Convert.ToInt32(item.SelectSingleNode("CabinetId").InnerText);
-                        byte numberOfSeats = Convert.ToByte(item.SelectSingleNode("NumberOfSeats").InnerText);
-                        db.Cabinets.Add(new Cabinet { CabinetId = id, NumberOfSeats = numberOfSeats });
-                        db.SaveChanges();
-                    }
-                }
-                else
-                {
-                    ViewBag.Error = "xml doc has incorrect data.";
-                }
-
-                System.IO.File.Delete(path);
-            }
-
-            return View();
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Logout", "Account");
-            //}
         }
 
         [Authorize]
@@ -585,74 +349,6 @@ namespace SchoolDbProject.Controllers
             }
         }
 
-        public IActionResult AddStudentByXml()
-        {
-            //if (HttpContext.Session.Keys.Contains("admin"))
-            //{
-
-
-            return View();
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Logout", "Account");
-            //}
-        }
-
-        // [Authorize]
-        [HttpPost]
-        public IActionResult AddStudentByXml(IFormFile file)
-        {
-            //if (HttpContext.Session.Keys.Contains("admin"))
-            //{
-            var path = _appEnvironment.WebRootPath + "\\Files\\" + file.FileName;
-            using (var fileStream = new FileStream(path, FileMode.Create))
-            {
-                file.CopyTo(fileStream);
-            }
-
-            if (System.IO.File.Exists(path))
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(path);
-                XmlNodeList dataNodes = doc.SelectNodes("/cabinets/cabinet");
-                int count = 0;
-                foreach (XmlNode item in dataNodes)
-                {
-                    int id = Convert.ToInt32(item.SelectSingleNode("CabinetId").InnerText);
-                    Cabinet cabinet = db.Cabinets.FirstOrDefault(c => c.CabinetId == id);
-                    if (cabinet == null)
-                    {
-                        count++;
-                    }
-                }
-
-                if (count == dataNodes.Count)
-                {
-                    foreach (XmlNode item in dataNodes)
-                    {
-                        int id = Convert.ToInt32(item.SelectSingleNode("CabinetId").InnerText);
-                        byte numberOfSeats = Convert.ToByte(item.SelectSingleNode("NumberOfSeats").InnerText);
-                        db.Cabinets.Add(new Cabinet { CabinetId = id, NumberOfSeats = numberOfSeats });
-                        db.SaveChanges();
-                    }
-                }
-                else
-                {
-                    ViewBag.Error = "xml doc has incorrect data.";
-                }
-
-                System.IO.File.Delete(path);
-            }
-
-            return View();
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Logout", "Account");
-            //}
-        }
-
         [Authorize]
         public IActionResult AddMarkByForm()
         {
@@ -739,17 +435,6 @@ namespace SchoolDbProject.Controllers
             {
                 return RedirectToAction("Logout", "Account");
             }
-        }
-
-        public IActionResult AddMarkByXml()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult AddMarkByXml(IFormFile formFile)
-        {
-            return View();
         }
 
         [Authorize]
@@ -872,12 +557,15 @@ namespace SchoolDbProject.Controllers
                 if (!string.IsNullOrEmpty(lessons.SelectedTeacher))
                 {
                     var cabs = db.Cabinets.ToList();
+                    var selectedClass = HttpContext.Session.Get<Class>("selectedclass");
+                    var set = db.StudentSchedules
+                        .Join(db.Classes, ss => ss.ClassId, c => c.ClassId, (ss, c) => new { ss.CabinetId, ss.ClassId, ss.DayOfWeek, ss.LessonNumber, c.NumberOfStudents });
                     foreach (var c in cabs)
                     {
-                        bool isBusy = db.StudentSchedules.Any(ss => ss.CabinetId == c.CabinetId &&
+                        bool isBusy = set.Any(ss => ss.CabinetId == c.CabinetId &&
                             ss.DayOfWeek == lessons.SelectedDayOfWeek &&
                             ss.LessonNumber == lessons.SelectedLessonNumber);
-                        if (!isBusy)
+                        if (!isBusy && selectedClass.NumberOfStudents <= c.NumberOfSeats)
                         {
                             cabinets.Add(c.CabinetId);
                         }
@@ -917,6 +605,544 @@ namespace SchoolDbProject.Controllers
             }
         }
 
+        #endregion Add By Form
+
+        // NOT finished
+        #region Add By XML
+
+        [Authorize]
+        public IActionResult AddSubjectByXml()
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult AddSubjectByXml(IFormFile file)
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var xmlPath = @"F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\Files\" +
+                    DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() +
+                    DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString()
+                    + file.FileName;
+                var xsdPath = @"F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\Schemas\subjects.xsd";
+                if (Path.GetExtension(xmlPath) != ".xml")
+                {
+                    ViewBag.WrongExtension = "Sorry, cannot import data from this file. Only .xml extension allowed.";
+                    return View();
+                }
+
+                using (var fileStream = new FileStream(xmlPath, FileMode.Create))
+                {
+                    file.CopyToAsync(fileStream);
+                    Thread.Sleep(2000);
+                }
+
+                string validate = ValidateXMLUsingXSD(xmlPath, xsdPath);
+                if (validate != string.Empty)
+                {
+                    ViewBag.Validate = validate;
+                    return View();
+                }
+
+                if (System.IO.File.Exists(xmlPath))
+                {
+                    XmlDocument doc = new XmlDocument();
+                    doc.Load(xmlPath);
+
+                    XmlNodeList dataNodes = doc.SelectNodes("/subjects/subject");
+                    foreach (XmlNode item in dataNodes)
+                    {
+                        int id = Convert.ToInt32(item.SelectSingleNode("SubjectId").InnerText);
+                        if (id <= 0)
+                        {
+                            ViewBag.Negative = $"Cannot insert object with negative Id ({id}). Only positive Id allowed.";
+                            return View();
+                        }
+
+                        Subject subject = db.Subjects.FirstOrDefault(s => s.SubjectId == id);
+                        if (subject != null)
+                        {
+                            ViewBag.Duplicate = $"Cannot insert object with duplicate key. Duplicate key is {subject.SubjectId}. Import was interrupted.";
+                            return View();
+                        }
+
+                        string pattern = "^[a-z]*$";
+                        if (!Regex.IsMatch(item.SelectSingleNode("SubjectName").InnerText, pattern, RegexOptions.IgnoreCase))
+                        {
+                            ViewBag.NotOnlyLetters = $"Cannot insert object wtih incorrect subject name format ('{item.SelectSingleNode("SubjectName").InnerText}', key is {item.SelectSingleNode("SubjectId").InnerText}). Only letters allowed. Import was interrupted.";
+                            return View();
+                        }
+                    }
+
+                    foreach (XmlNode item in dataNodes)
+                    {
+                        int id = Convert.ToInt32(item.SelectSingleNode("SubjectId").InnerText);
+                        string name = item.SelectSingleNode("SubjectName").InnerText;
+                        db.Subjects.Add(new Subject { SubjectId = id, SubjectName = name });
+                        db.SaveChanges();
+                    }
+                }
+
+                ViewBag.Success = "Import was finished successfully.";
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        public IActionResult AddClassByXml()
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult AddClassByXml(IFormFile file)
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var xmlPath = @"F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\Files\" +
+                        DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() +
+                        DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString()
+                        + file.FileName;
+                var xsdPath = @"F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\Schemas\classes.xsd";
+                if (Path.GetExtension(xmlPath) != ".xml")
+                {
+                    ViewBag.WrongExtension = "Sorry, cannot import data from this file. Only .xml extension allowed.";
+                    return View();
+                }
+
+                using (var fileStream = new FileStream(xmlPath, FileMode.Create))
+                {
+                    file.CopyToAsync(fileStream);
+                    Thread.Sleep(2000);
+                }
+
+                string validate = ValidateXMLUsingXSD(xmlPath, xsdPath);
+                if (validate != string.Empty)
+                {
+                    ViewBag.Validate = validate;
+                    return View();
+                }
+
+                if (System.IO.File.Exists(xmlPath))
+                {
+                    XmlDocument doc = new XmlDocument();
+                    doc.Load(xmlPath);
+                    XmlNodeList dataNodes = doc.SelectNodes("/classes/class");
+                    foreach (XmlNode item in dataNodes)
+                    {
+                        int id = Convert.ToInt32(item.SelectSingleNode("ClassId").InnerText);
+                        if (id <= 0)
+                        {
+                            ViewBag.Negative = $"Cannot insert object with negative Id ({id}). Only positive Id allowed.";
+                            return View();
+                        }
+
+                        Class @class = db.Classes.FirstOrDefault(c => c.ClassId == id);
+                        if (@class != null)
+                        {
+                            ViewBag.Duplicate = $"Cannot insert object with duplicate key. Duplicate key is {@class.ClassId}. Import was interrupted.";
+                            return View();
+                        }
+
+                        string pattern = "[1-9]+[a-z]$";
+                        var name = item.SelectSingleNode("ClassName").InnerText;
+                        if (!(Regex.IsMatch(name, pattern, RegexOptions.IgnoreCase) && item.SelectSingleNode("ClassName").InnerText.Length <= 3))
+                        {
+                            ViewBag.NotOnlyLetters = $"Cannot insert object wtih incorrect class name format ('{item.SelectSingleNode("ClassName").InnerText}', key is {item.SelectSingleNode("ClassId").InnerText}). Name must consists of one or two numbers and letter. Import was interrupted.";
+                            return View();
+                        }
+
+                        var num = Convert.ToInt32(item.SelectSingleNode("NumberOfStudents").InnerText);
+                        if (!(num >= 0 && num <= 255))
+                        {
+                            ViewBag.Overflow = $"Cannot insert object with incorrect number of students value ({num}). Number must be in a range [0; 255]. Import was interrupted.";
+                            return View();
+                        }
+                    }
+
+                    foreach (XmlNode item in dataNodes)
+                    {
+                        int id = Convert.ToInt32(item.SelectSingleNode("ClassId").InnerText);
+                        string name = item.SelectSingleNode("ClassName").InnerText;
+                        byte numberOfStudents = (byte)Convert.ToInt32(item.SelectSingleNode("NumberOfStudents").InnerText);
+                        db.Classes.Add(new Class { ClassId = id, ClassName = name, NumberOfStudents = numberOfStudents });
+                        db.SaveChanges();
+                    }
+                }
+
+                ViewBag.Success = "Import was finished successfully.";
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        public IActionResult AddCabinetByXml()
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult AddCabinetByXml(IFormFile file)
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var xmlPath = @"F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\Files\" +
+                            DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() +
+                            DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString()
+                            + file.FileName;
+                var xsdPath = @"F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\Schemas\cabinets.xsd";
+                if (Path.GetExtension(xmlPath) != ".xml")
+                {
+                    ViewBag.WrongExtension = "Sorry, cannot import data from this file. Only .xml extension allowed.";
+                    return View();
+                }
+
+                using (var fileStream = new FileStream(xmlPath, FileMode.Create))
+                {
+                    file.CopyToAsync(fileStream);
+                    Thread.Sleep(2000);
+                }
+
+                string validate = ValidateXMLUsingXSD(xmlPath, xsdPath);
+                if (validate != string.Empty)
+                {
+                    ViewBag.Validate = validate;
+                    return View();
+                }
+
+                if (System.IO.File.Exists(xmlPath))
+                {
+                    XmlDocument doc = new XmlDocument();
+                    doc.Load(xmlPath);
+                    XmlNodeList dataNodes = doc.SelectNodes("/cabinets/cabinet");
+                    foreach (XmlNode item in dataNodes)
+                    {
+                        int id = Convert.ToInt32(item.SelectSingleNode("CabinetId").InnerText);
+                        if (id <= 0)
+                        {
+                            ViewBag.Negative = $"Cannot insert object with negative Id ({id}). Only positive Id allowed.";
+                            return View();
+                        }
+
+                        Cabinet cabinet = db.Cabinets.FirstOrDefault(c => c.CabinetId == id);
+                        if (cabinet != null)
+                        {
+                            ViewBag.Duplicate = $"Cannot insert object with duplicate key. Duplicate key is {cabinet.CabinetId}. Import was interrupted.";
+                            return View();
+                        }
+
+                        var num = Convert.ToInt32(item.SelectSingleNode("NumberOfSeats").InnerText);
+                        if (!(num >= 0 && num <= 255))
+                        {
+                            ViewBag.Overflow = $"Cannot insert object with incorrect number of seats value ({num}). Number must be in a range [0; 255]. Import was interrupted.";
+                            return View();
+                        }
+                    }
+
+                    foreach (XmlNode item in dataNodes)
+                    {
+                        int id = Convert.ToInt32(item.SelectSingleNode("CabinetId").InnerText);
+                        byte numberOfSeats = (byte)Convert.ToInt32(item.SelectSingleNode("NumberOfSeats").InnerText);
+                        db.Cabinets.Add(new Cabinet { CabinetId = id, NumberOfSeats = numberOfSeats });
+                        db.SaveChanges();
+                    }
+                }
+
+                ViewBag.Success = "Import was finished successfully.";
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        public IActionResult AddTeacherByXml()
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult AddTeacherByXml(IFormFile file)
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var xmlPath = @"F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\Files\" +
+                        DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() +
+                        DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString()
+                        + file.FileName;
+                var xsdPath = @"F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\Schemas\teachers.xsd";
+                if (Path.GetExtension(xmlPath) != ".xml")
+                {
+                    ViewBag.WrongExtension = "Sorry, cannot import data from this file. Only .xml extension allowed.";
+                    return View();
+                }
+
+                using (var fileStream = new FileStream(xmlPath, FileMode.Create))
+                {
+                    file.CopyToAsync(fileStream);
+                    Thread.Sleep(2000);
+                }
+
+                string validate = ValidateXMLUsingXSD(xmlPath, xsdPath);
+                if (validate != string.Empty)
+                {
+                    ViewBag.Validate = validate;
+                    return View();
+                }
+
+                if (System.IO.File.Exists(xmlPath))
+                {
+                    XmlDocument doc = new XmlDocument();
+                    doc.Load(xmlPath);
+                    XmlNodeList dataNodes = doc.SelectNodes("/teachers/teacher");
+                    foreach (XmlNode item in dataNodes)
+                    {
+                        int id = Convert.ToInt32(item.SelectSingleNode("TeacherId").InnerText);
+                        if (id <= 0)
+                        {
+                            ViewBag.Negative = $"Cannot insert object with negative Id ({id}). Only positive Id allowed.";
+                            return View();
+                        }
+
+                        Teacher teacher = db.Teachers.FirstOrDefault(t => t.TeacherId == id);
+                        if (teacher != null)
+                        {
+                            ViewBag.Duplicate = $"Cannot insert object with duplicate key. Duplicate key is {teacher.TeacherId}. Import was interrupted.";
+                            return View();
+                        }
+
+                        string pattern = @"^(?("")(""[^""]+?""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
+                        @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9]{2,17}))$";
+                        var email = item.SelectSingleNode("Email").InnerText;
+                        if (!Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase))
+                        {
+                            ViewBag.EmailError = $"Cannot insert object wtih incorrect email format ('{item.SelectSingleNode("Email").InnerText}', key is {item.SelectSingleNode("TeacherId").InnerText}). Import was interrupted.";
+                            return View();
+                        }
+
+                        // TODO: update database (add date column to Mark and increase PhoneNumber field).
+                        // pattern = @"\+[0-9]{3}\([0-9]{2}\)[0-9]{3}-[0-9]{2}-[0-9]{2}";
+                        pattern = @"[0-9]{3}[0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2}";
+                        var number = item.SelectSingleNode("PhoneNumber").InnerText;
+                        if (!Regex.IsMatch(number, pattern, RegexOptions.IgnoreCase))
+                        {
+                            ViewBag.PhoneError = $"Cannot insert object wtih incorrect phone number format ('{item.SelectSingleNode("PhoneNumber").InnerText}', key is {item.SelectSingleNode("TeacherId").InnerText}). Import was interrupted.";
+                            return View();
+                        }
+                    }
+
+                    foreach (XmlNode item in dataNodes)
+                    {
+                        int id = Convert.ToInt32(item.SelectSingleNode("TeacherId").InnerText);
+                        string fname = item.SelectSingleNode("FirstName").InnerText;
+                        string lname = item.SelectSingleNode("LastName").InnerText;
+                        string email = item.SelectSingleNode("Email").InnerText;
+                        string pass = item.SelectSingleNode("Password").InnerText;
+                        string phnum = item.SelectSingleNode("PhoneNumber").InnerText;
+                        db.Teachers.Add(new Teacher { TeacherId = id, FirstName = fname, LastName = lname, Email = email, Password = pass, PhoneNumber = phnum });
+                        db.SaveChanges();
+                    }
+                }
+
+                ViewBag.Success = "Import was finished successfully.";
+                return View();
+
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        public IActionResult AddStudentByXml()
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult AddStudentByXml(IFormFile file)
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var xmlPath = @"F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\Files\" +
+                        DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() +
+                        DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString()
+                        + file.FileName;
+                var xsdPath = @"F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\Schemas\students.xsd";
+                if (Path.GetExtension(xmlPath) != ".xml")
+                {
+                    ViewBag.WrongExtension = "Sorry, cannot import data from this file. Only .xml extension allowed.";
+                    return View();
+                }
+
+                using (var fileStream = new FileStream(xmlPath, FileMode.Create))
+                {
+                    file.CopyToAsync(fileStream);
+                    Thread.Sleep(2000);
+                }
+
+                string validate = ValidateXMLUsingXSD(xmlPath, xsdPath);
+                if (validate != string.Empty)
+                {
+                    ViewBag.Validate = validate;
+                    return View();
+                }
+
+                if (System.IO.File.Exists(xmlPath))
+                {
+                    XmlDocument doc = new XmlDocument();
+                    doc.Load(xmlPath);
+                    XmlNodeList dataNodes = doc.SelectNodes("/students/student");
+                    var allClasses = db.Classes.ToList();
+                    var classesAndPopulation = db.Students
+                            .Join(db.Classes, s => s.ClassId, c => c.ClassId, (s, c) => new { s.StudentId, c.ClassId })
+                            .GroupBy(sc => sc.ClassId)
+                            .Select(sc => new { sc.Key, Count = sc.Count() }).ToList();
+                    foreach (var cp in classesAndPopulation)
+                    {
+                        var class1 = db.Classes.FirstOrDefault(c => c.ClassId == cp.Key);
+                        if (cp.Count >= class1.NumberOfStudents)
+                        {
+                            allClasses.Remove(class1);
+                        }
+                    }
+
+                    foreach (XmlNode item in dataNodes)
+                    {
+                        int id = Convert.ToInt32(item.SelectSingleNode("StudentId").InnerText);
+                        if (id <= 0)
+                        {
+                            ViewBag.Negative = $"Cannot insert object with negative Id ({id}). Only positive Id allowed.";
+                            return View();
+                        }
+
+                        Student student = db.Students.FirstOrDefault(s => s.StudentId == id);
+                        if (student != null)
+                        {
+                            ViewBag.Duplicate = $"Cannot insert object with duplicate key. Duplicate key is {student.StudentId}. Import was interrupted.";
+                            return View();
+                        }
+
+                        string pattern = @"^(?("")(""[^""]+?""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
+                        @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9]{2,17}))$";
+                        var email = item.SelectSingleNode("Email").InnerText;
+                        if (!Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase))
+                        {
+                            ViewBag.EmailError = $"Cannot insert object wtih incorrect email format ('{item.SelectSingleNode("Email").InnerText}', key is {item.SelectSingleNode("StudentId").InnerText}). Import was interrupted.";
+                            return View();
+                        }
+
+                        // pattern = @"\+[0-9]{3}\([0-9]{2}\)[0-9]{3}-[0-9]{2}-[0-9]{2}";
+                        pattern = @"[0-9]{3}[0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2}";
+                        var number = item.SelectSingleNode("PhoneNumber").InnerText;
+                        if (!Regex.IsMatch(number, pattern, RegexOptions.IgnoreCase))
+                        {
+                            ViewBag.PhoneError = $"Cannot insert object wtih incorrect phone number format ('{item.SelectSingleNode("PhoneNumber").InnerText}', key is {item.SelectSingleNode("StudentId").InnerText}). Import was interrupted.";
+                            return View();
+                        }
+
+                        var classid = Convert.ToInt32(item.SelectSingleNode("ClassId").InnerText);
+                        var class3 = db.Classes.FirstOrDefault(c => c.ClassId == classid);
+                        if (class3 == null)
+                        {
+                            ViewBag.NotFounded = $"Cannot insert object in not founded class (key is {item.SelectSingleNode("ClassId").InnerText}). Import was interrupted.";
+                            return View();
+                        }
+
+                        var class2 = allClasses.FirstOrDefault(c => c.ClassId == classid);
+                        if (class2 == null)
+                        {
+                            ViewBag.ClassOverflow = $"Cannot insert object in limited set. Student {item.SelectSingleNode("FirstName").InnerText} {item.SelectSingleNode("LastName").InnerText} cannot be added to {db.Classes.FirstOrDefault(c => c.ClassId == classid).ClassName} class, because the number of students is already {db.Classes.FirstOrDefault(c => c.ClassId == classid).NumberOfStudents}. Import was interrupted.";
+                            return View();
+                        }
+                    }
+
+                    foreach (XmlNode item in dataNodes)
+                    {
+                        int id = Convert.ToInt32(item.SelectSingleNode("StudentId").InnerText);
+                        string fname = item.SelectSingleNode("FirstName").InnerText;
+                        string lname = item.SelectSingleNode("LastName").InnerText;
+                        string email = item.SelectSingleNode("Email").InnerText;
+                        string pass = item.SelectSingleNode("Password").InnerText;
+                        string phnum = item.SelectSingleNode("PhoneNumber").InnerText;
+                        int classid = Convert.ToInt32(item.SelectSingleNode("ClassId").InnerText);
+                        db.Students.Add(new Student { StudentId = id, FirstName = fname, LastName = lname, Email = email, Password = pass, PhoneNumber = phnum, ClassId = classid });
+                        db.SaveChanges();
+                    }
+                }
+
+                ViewBag.Success = "Import was finished successfully.";
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        public IActionResult AddMarkByXml()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddMarkByXml(IFormFile formFile)
+        {
+            return View();
+        }
+
         public IActionResult AddLessonByXml()
         {
             return View();
@@ -928,7 +1154,19 @@ namespace SchoolDbProject.Controllers
             return View();
         }
 
+        #endregion Add By XML
+
+        // NOT finished
+        #region Delete
+        #endregion Delete
+
+        // NOT finished
+        #region Edit
+        #endregion Edit
+
+        // Finished
         #region Export Data
+
         [Authorize]
         public FileContentResult ExportSubjects(string name)
         {
@@ -1205,6 +1443,7 @@ namespace SchoolDbProject.Controllers
 
             return result;
         }
+
         #endregion Export Data
     }
 }

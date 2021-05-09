@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace SchoolDbProject.Attributes
 {
-    public class ClassNameSpecificFormat : ValidationAttribute
+    public class MicrosoftEmail : ValidationAttribute
     {
         public override bool IsValid(object value)
         {
-            string name = (string)value;
-            string pattern = "[1-9]+[a-z]$";
-            if (name != null && Regex.IsMatch(name, pattern, RegexOptions.IgnoreCase) && name.Length <= 3)
+            string email = (string)value;
+            string pattern = @"^(?("")(""[^""]+?""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
+                @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9]{2,17}))$";
+            if (email != null && Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase))
             {
                 return true;
             }

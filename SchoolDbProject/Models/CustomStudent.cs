@@ -14,7 +14,7 @@ namespace SchoolDbProject.Models
         public int? StudentId { get; set; }
 
         [Required(ErrorMessage = "This field is required.")]
-        [EmailAddress(ErrorMessage = "Incorrect email format.")]
+        [MicrosoftEmail(ErrorMessage = "Incorrect email format.")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "This field is required.")]

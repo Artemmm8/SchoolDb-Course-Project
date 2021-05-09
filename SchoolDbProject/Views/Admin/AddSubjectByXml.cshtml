@@ -54,25 +54,48 @@
         width: 151px;
     }
 
-    .attach {
-
+    .flex {
+        display: flex;
     }
 </style>
 
-<div class="attach">
-    <form asp-action="AddSubjectByXml" asp-controller="Admin" enctype="multipart/form-data">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <div class="example-1">
-            <div class="form-group">
-                <label class="label">
-                    <i class="material-icons">attach_file</i>
-                    <span class="title">Choose File</span>
-                    <input type="file" name="file">
-                </label>
+<div class="flex">
+    <div class="attach">
+        <form asp-action="AddSubjectByXml" asp-controller="Admin" enctype="multipart/form-data">
+            <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+            <div class="example-1">
+                <div class="form-group">
+                    <label class="label">
+                        <i class="material-icons">attach_file</i>
+                        <span class="title">Choose File</span>
+                        <input type="file" name="file" id="file" onchange="onLoaded()">
+                    </label>
+                </div>
             </div>
-        </div>
-        <div>
-            <input id="impdata" type="submit" value="Import Data" class="btn btn-outline-dark" />
-        </div>
-    </form>
+            <div>
+                <input id="impdata" type="submit" value="Import Data" class="btn btn-outline-success" disabled />
+            </div>
+        </form>
+    </div>
+    <div class="text-danger">
+        @ViewBag.Negative
+        @ViewBag.WrongExtension
+        @ViewBag.Validate
+        @ViewBag.Duplicate
+        @ViewBag.NotOnlyLetters
+    </div>
+    <div class="text-success">
+        @ViewBag.Success
+    </div>
 </div>
+
+<script defer type="text/javascript">
+    function onLoaded() {
+        if ($('#file').val() == '') {
+            $("#impdata").prop("disabled", true);
+        }
+        else {
+            $("#impdata").prop("disabled", false);
+        }
+    }
+</script>
