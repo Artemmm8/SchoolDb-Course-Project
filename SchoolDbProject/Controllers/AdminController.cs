@@ -607,7 +607,7 @@ namespace SchoolDbProject.Controllers
 
         #endregion Add By Form
 
-        // NOT finished
+        // Finished
         #region Add By XML
 
         [Authorize]
@@ -1254,15 +1254,166 @@ namespace SchoolDbProject.Controllers
             }
         }
 
+        [Authorize]
         public IActionResult AddLessonByXml()
         {
-            return View();
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
         }
 
+        [Authorize]
         [HttpPost]
-        public IActionResult AddLessonByXml(IFormFile formFile)
+        public IActionResult AddLessonByXml(IFormFile file)
         {
-            return View();
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var xmlPath = @"F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\Files\" +
+                        DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() +
+                        DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString()
+                        + file.FileName;
+                var xsdPath = @"F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\Schemas\lessons.xsd";
+                if (Path.GetExtension(xmlPath) != ".xml")
+                {
+                    ViewBag.WrongExtension = "Sorry, cannot import data from this file. Only .xml extension allowed.";
+                    return View();
+                }
+
+                using (var fileStream = new FileStream(xmlPath, FileMode.Create))
+                {
+                    file.CopyToAsync(fileStream);
+                    Thread.Sleep(2000);
+                }
+
+                string validate = ValidateXMLUsingXSD(xmlPath, xsdPath);
+                if (validate != string.Empty)
+                {
+                    ViewBag.Validate = validate;
+                    return View();
+                }
+
+                if (System.IO.File.Exists(xmlPath))
+                {
+                    XmlDocument doc = new XmlDocument();
+                    doc.Load(xmlPath);
+                    XmlNodeList dataNodes = doc.SelectNodes("/lessons/lesson");
+                    foreach (XmlNode item in dataNodes)
+                    {
+                        var lesNum = Convert.ToInt32(item.SelectSingleNode("LessonNumber").InnerText);
+                        if (lesNum <= 0 || lesNum >= 8)
+                        {
+                            ViewBag.WrongNumber = $"Cannot insert object with incorrect lesson number value ({lesNum}). Allowed range is a [1; 7]. Import was interrupted.";
+                            return View();
+                        }
+
+                        var day = Convert.ToInt32(item.SelectSingleNode("DayOfWeek").InnerText);
+                        if (day <= 0 || day >= 6)
+                        {
+                            ViewBag.WrongDay = $"Cannot insert object with incorrect day of week value ({day}). Allowed range is a [1; 5]. Import was interrupted.";
+                            return View();
+                        }
+
+                        var clId = Convert.ToInt32(item.SelectSingleNode("ClassId").InnerText);
+                        var @class = db.Classes.FirstOrDefault(c => c.ClassId == clId);
+                        if (clId <= 0)
+                        {
+                            ViewBag.NegativeClassId = $"Cannot insert object with negative ClassId ({clId}). Only positive Id allowed. Import was interrupted.";
+                            return View();
+                        }
+
+                        if (@class == null)
+                        {
+                            ViewBag.NotFoundedClass = $"Cannot insert object with not founded class, key is {clId}.Import was interrupted.";
+                            return View();
+                        }
+
+                        var subId = Convert.ToInt32(item.SelectSingleNode("SubjectId").InnerText);
+                        var subject = db.Subjects.FirstOrDefault(s => s.SubjectId == subId);
+                        if (subId <= 0)
+                        {
+                            ViewBag.NegativeSubjectId = $"Cannot insert object with negative SubjectId ({subId}). Only positive Id allowed. Import was interrupted.";
+                            return View();
+                        }
+
+                        if (subject == null)
+                        {
+                            ViewBag.NotFoundedSubject = $"Cannot insert object with not founded subject, key is {subId}. Import was interrupted.";
+                            return View();
+                        }
+
+                        var cabId = Convert.ToInt32(item.SelectSingleNode("CabinetId").InnerText);
+                        var cabinet = db.Cabinets.FirstOrDefault(c => c.CabinetId == cabId);
+                        if (cabId <= 0)
+                        {
+                            ViewBag.NegativeCabinetId = $"Cannot insert object with negative CabinetId ({cabId}). Only positive Id allowed. Import was interrupted.";
+                            return View();
+                        }
+
+                        if (cabinet == null)
+                        {
+                            ViewBag.NotFoundedCabinet = $"Cannot insert object with not founded cabinet, key is {cabId}. Import was interrupted.";
+                            return View();
+                        }
+
+                        var teachId = Convert.ToInt32(item.SelectSingleNode("TeacherId").InnerText);
+                        var teacher = db.Teachers.FirstOrDefault(t => t.TeacherId == teachId);
+                        if (teachId <= 0)
+                        {
+                            ViewBag.NegativeTeacherId = $"Cannot insert object with negative TeacherId ({teachId}). Only positive Id allowed. Import was interrupted.";
+                            return View();
+                        }
+
+                        if (teacher == null)
+                        {
+                            ViewBag.NotFoundedTeacher = $"Cannot insert object with not founded teacher, key is {teachId}. Import was interrupted.";
+                            return View();
+                        }
+
+                        var isTeacherBusy = db.StudentSchedules.Any(ss => ss.DayOfWeek == day && ss.LessonNumber == lesNum && ss.TeacherId == teachId);
+                        if (isTeacherBusy)
+                        {
+                            ViewBag.TeacherNotFree = $"Cannot insert object. Teacher {db.Teachers.FirstOrDefault(t => t.TeacherId == teachId).FirstName} {db.Teachers.FirstOrDefault(t => t.TeacherId == teachId).LastName}, key is {teachId}, is already busy. Import was interrupted.";
+                            return View();
+                        }
+
+                        var isCabinetBusy = db.StudentSchedules.Any(ss => ss.DayOfWeek == day && ss.LessonNumber == lesNum && ss.CabinetId == cabId);
+                        if (isCabinetBusy)
+                        {
+                            ViewBag.CabinetNotFree = $"Cannot insert object. Cabinet {cabId} is already busy. Import was interrupted.";
+                            return View();
+                        }
+
+                        if (cabinet.NumberOfSeats < @class.NumberOfStudents)
+                        {
+                            ViewBag.CabinetOverflow = $"Cannot insert object. Number of seats in {cabId} cabinet is less than number of students in {@class.ClassName} class. Import was interrupted.";
+                            return View();
+                        }
+                    }
+
+                    foreach (XmlNode item in dataNodes)
+                    {
+                        var lesNum = Convert.ToByte(item.SelectSingleNode("LessonNumber").InnerText);
+                        var day = Convert.ToByte(item.SelectSingleNode("DayOfWeek").InnerText);
+                        var clId = Convert.ToInt32(item.SelectSingleNode("ClassId").InnerText);
+                        var cabId = Convert.ToInt32(item.SelectSingleNode("CabinetId").InnerText);
+                        var subId = Convert.ToInt32(item.SelectSingleNode("SubjectId").InnerText);
+                        var teachId = Convert.ToInt32(item.SelectSingleNode("TeacherId").InnerText);
+                        db.Database.ExecuteSqlInterpolated($"INSERT INTO StudentSchedule (LessonNumber, DayOfWeek, ClassId, CabinetId, SubjectId, TeacherId) VALUES ({lesNum}, {day}, {clId}, {cabId}, {subId}, {teachId})");
+                    }
+                }
+
+                ViewBag.Success = "Import was finished successfully.";
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
         }
 
         #endregion Add By XML

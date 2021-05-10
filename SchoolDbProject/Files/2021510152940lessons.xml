@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<lessons>
+  <lesson>
+    <LessonNumber>1</LessonNumber>
+    <DayOfWeek>1</DayOfWeek>
+    <ClassId>164</ClassId>
+    <CabinetId>1200</CabinetId>
+    <SubjectId>1</SubjectId>
+    <TeacherId>8008</TeacherId>
+  </lesson>
+</lessons>
