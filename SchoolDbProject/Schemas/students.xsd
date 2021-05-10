@@ -12,7 +12,7 @@
               <xs:element type="xs:string" name="Email" />
               <xs:element type="xs:string" name="Password" />
               <xs:element type="xs:string" name="PhoneNumber" />
-              <xs:element type="xs:integer" name="ClassId" />
+              <xs:element type="xs:integer" nillable="1" name="ClassId" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

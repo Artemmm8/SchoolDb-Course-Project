@@ -128,7 +128,6 @@ namespace SchoolDbProject.Controllers
             return Convert.ToBase64String(dst);
         }
 
-        // TODO: catch format exception.
         public static bool VerifyHashedPassword(string hashedPassword, string password)
         {
             byte[] buffer4;
@@ -137,7 +136,16 @@ namespace SchoolDbProject.Controllers
                 return false;
             }
 
-            byte[] src = Convert.FromBase64String(hashedPassword);
+            byte[] src;
+            try
+            {
+                src = Convert.FromBase64String(hashedPassword);
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+            
             if ((src.Length != 0x31) || (src[0] != 0))
             {
                 return false;

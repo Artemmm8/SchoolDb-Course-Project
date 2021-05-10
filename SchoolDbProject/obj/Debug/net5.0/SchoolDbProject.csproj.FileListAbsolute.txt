@@ -101,3 +101,4 @@ F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\D
 F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\Razor\Views\Admin\AddMarkByXml.cshtml.g.cs
 F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\Razor\Views\Admin\AddLessonByForm.cshtml.g.cs
 F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\Razor\Views\Admin\AddLessonByXml.cshtml.g.cs
+F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\SchoolDbProject.csprojAssemblyReference.cache
