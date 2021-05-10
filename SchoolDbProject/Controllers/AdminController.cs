@@ -681,6 +681,12 @@ namespace SchoolDbProject.Controllers
                             ViewBag.NotOnlyLetters = $"Cannot insert object wtih incorrect subject name format ('{item.SelectSingleNode("SubjectName").InnerText}', key is {item.SelectSingleNode("SubjectId").InnerText}). Only letters allowed. Import was interrupted.";
                             return View();
                         }
+
+                        subject = db.Subjects.FirstOrDefault(s => s.SubjectName == item.SelectSingleNode("SubjectName").InnerText); if (subject != null)
+                        {
+                            ViewBag.Duplicate = $"Cannot insert object with duplicate name. Duplicate name is {subject.SubjectName}. Import was interrupted.";
+                            return View();
+                        }
                     }
 
                     foreach (XmlNode item in dataNodes)
@@ -770,6 +776,13 @@ namespace SchoolDbProject.Controllers
                         if (!(Regex.IsMatch(name, pattern, RegexOptions.IgnoreCase) && item.SelectSingleNode("ClassName").InnerText.Length <= 3))
                         {
                             ViewBag.NotOnlyLetters = $"Cannot insert object wtih incorrect class name format ('{item.SelectSingleNode("ClassName").InnerText}', key is {item.SelectSingleNode("ClassId").InnerText}). Name must consists of one or two numbers and letter. Import was interrupted.";
+                            return View();
+                        }
+
+                        @class = db.Classes.FirstOrDefault(c => c.ClassName == name);
+                        if (@class != null)
+                        {
+                            ViewBag.Duplicate = $"Cannot insert object with duplicate name. Duplicate name is {@class.ClassName}. Import was interrupted.";
                             return View();
                         }
 
@@ -1420,6 +1433,75 @@ namespace SchoolDbProject.Controllers
 
         // NOT finished
         #region Delete
+
+        [Authorize]
+        public IActionResult DeleteSubject()
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var subjects = new List<string>();
+                foreach (var s in db.Subjects)
+                {
+                    subjects.Add(s.SubjectName);
+                }
+
+                return View(new CustomSubject { Subjects = subjects });
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult DeleteSubject(CustomSubject subject)
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var subjects = new List<string>();
+                foreach (var s in db.Subjects)
+                {
+                    subjects.Add(s.SubjectName);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    if (subject.SelectedSubject != null)
+                    {
+                        Subject subject1 = db.Subjects.FirstOrDefault(s => s.SubjectName == subject.SelectedSubject);
+                        var isSubjectUsedInMarks = db.Marks.Any(m => m.SubjectId == subject1.SubjectId);
+                        if (isSubjectUsedInMarks)
+                        {
+                            ViewBag.UsedInMarks = "Cannot delete this subject, because it is used in Marks.";
+                            return View(new CustomSubject { Subjects = subjects });
+                        }
+
+                        var isSubjectUsedInLessons = db.StudentSchedules.Any(ss => ss.SubjectId == subject1.SubjectId);
+                        if (isSubjectUsedInLessons)
+                        {
+                            ViewBag.UsedInLessons = "Cannot delete this subject, because it is used in Lessons.";
+                            return View(new CustomSubject { Subjects = subjects });
+                        }
+
+                        if (subject1 != null)
+                        {
+                            db.Subjects.Remove(subject1);
+                            db.SaveChanges();
+                        }
+
+                        return RedirectToAction("DeleteSubject", "Admin");
+                    }
+                }
+
+                return View(new CustomSubject { Subjects = subjects });
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
         #endregion Delete
 
         // NOT finished
