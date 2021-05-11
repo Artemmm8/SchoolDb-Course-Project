@@ -1,0 +1,67 @@
+﻿@model CustomStudentDel
+
+<style>
+    .flex {
+        display: flex;
+    }
+
+    li {
+        list-style-type: none;
+        padding: 10px;
+        height: 50px;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    #li1 {
+        width: 200px;
+    }
+
+    #submbtn {
+        margin-left: 213px;
+    }
+</style>
+
+<div>
+    <form id="liform" asp-action="DeleteStudent" asp-controller="Admin">
+        <div class="flex">
+            <div>
+                <ul>
+                    <li>
+                        Choose student:
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>
+                        @Html.DropDownListFor(s => s.SelectedStudent, new SelectList(Model.Students), " ", new { id = "li1", onchange = "getSelected1()" })
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>
+                        <div class="text-danger">@Html.ValidationMessageFor(s => s.SelectedStudent)</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-danger">
+            @ViewBag.UsedInMarks
+        </div>
+        <div>
+            <input id="submbtn" type="button" value="Delete Student" class="btn btn-outline-danger" />
+        </div>
+    </form>
+</div>
+
+<script defer type="text/javascript">
+    submbtn.onclick = function () {
+        document.getElementById("liform").submit();
+    }
+</script>

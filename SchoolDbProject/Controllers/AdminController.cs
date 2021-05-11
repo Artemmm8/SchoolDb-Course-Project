@@ -548,7 +548,7 @@ namespace SchoolDbProject.Controllers
                             ss.DayOfWeek == lessons.SelectedDayOfWeek);
                         if (!isBusy && !string.IsNullOrEmpty(t.FirstName))
                         {
-                            teachers.Add(t.FirstName + " " + t.LastName + "(" + t.TeacherId + ")");
+                            teachers.Add(t.FirstName + " " + t.LastName + " (" + t.TeacherId + ")");
                         }
                     }
                 }
@@ -575,7 +575,7 @@ namespace SchoolDbProject.Controllers
                 if (lessons.SelectedCabinet != null)
                 {
                     var selectedClass = HttpContext.Session.Get<Class>("selectedclass");
-                    var selectedTeacher = db.Teachers.FirstOrDefault(t => t.FirstName + " " + t.LastName + "(" + t.TeacherId + ")" == lessons.SelectedTeacher);
+                    var selectedTeacher = db.Teachers.FirstOrDefault(t => t.FirstName + " " + t.LastName + " (" + t.TeacherId + ")" == lessons.SelectedTeacher);
                     var selectedSubject = db.Subjects.FirstOrDefault(s => s.SubjectName == lessons.SelectedSubject);
                     db.Database.ExecuteSqlInterpolated($"INSERT INTO StudentSchedule (LessonNumber, DayOfWeek, ClassId, CabinetId, SubjectId, TeacherId) VALUES ({lessons.SelectedLessonNumber}, {lessons.SelectedDayOfWeek}, {selectedClass.ClassId}, {lessons.SelectedCabinet}, {selectedSubject.SubjectId}, {selectedTeacher.TeacherId})");
                     return View(new CustomLessons
@@ -608,6 +608,7 @@ namespace SchoolDbProject.Controllers
         #endregion Add By Form
 
         // Finished
+        // TODO: Update add by xml. Check on null, empty, whitespace values in strings.
         #region Add By XML
 
         [Authorize]
@@ -1500,6 +1501,296 @@ namespace SchoolDbProject.Controllers
             {
                 return RedirectToAction("Logout", "Account");
             }
+        }
+
+        [Authorize]
+        public IActionResult DeleteClass()
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var classes = new List<string>();
+                foreach (var c in db.Classes)
+                {
+                    classes.Add(c.ClassName);
+                }
+
+                return View(new CustomClass { Classes = classes });
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult DeleteClass(CustomClass @class)
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var classes = new List<string>();
+                foreach (var c in db.Classes)
+                {
+                    classes.Add(c.ClassName);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    if (@class.SelectedClass != null)
+                    {
+                        Class class1 = db.Classes.FirstOrDefault(c => c.ClassName == @class.SelectedClass);
+                        var isClassUsedInStudents = db.Students.Any(s => s.ClassId == class1.ClassId);
+                        if (isClassUsedInStudents)
+                        {
+                            ViewBag.UsedInStudents = "Cannot delete this class, because it is used in Students.";
+                            return View(new CustomClass { Classes = classes });
+                        }
+
+                        var isClassUsedInLessons = db.StudentSchedules.Any(ss => ss.ClassId == class1.ClassId);
+                        if (isClassUsedInLessons)
+                        {
+                            ViewBag.UsedInLessons = "Cannot delete this class, because it is used in Lessons.";
+                            return View(new CustomClass { Classes = classes });
+                        }
+
+                        if (class1 != null)
+                        {
+                            db.Classes.Remove(class1);
+                            db.SaveChanges();
+                        }
+
+                        return RedirectToAction("DeleteClass", "Admin");
+                    }
+                }
+
+                return View(new CustomClass { Classes = classes });
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        public IActionResult DeleteCabinet()
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var cabinets = new List<int?>();
+                foreach (var c in db.Cabinets)
+                {
+                    cabinets.Add(c.CabinetId);
+                }
+
+                return View(new CustomCabinet { Cabinets = cabinets });
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult DeleteCabinet(CustomCabinet cabinet)
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var cabinets = new List<int?>();
+                foreach (var c in db.Cabinets)
+                {
+                    cabinets.Add(c.CabinetId);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    if (cabinet.SelectedCabinet != null)
+                    {
+                        Cabinet cabinet1 = db.Cabinets.FirstOrDefault(c => c.CabinetId == cabinet.SelectedCabinet);
+                        var isCabinetUsedInLessons = db.StudentSchedules.Any(ss => ss.CabinetId == cabinet1.CabinetId);
+                        if (isCabinetUsedInLessons)
+                        {
+                            ViewBag.UsedInLessons = "Cannot delete this cabinet, because it is used in Lessons.";
+                            return View(new CustomCabinet { Cabinets = cabinets });
+                        }
+
+                        if (cabinet1 != null)
+                        {
+                            db.Cabinets.Remove(cabinet1);
+                            db.SaveChanges();
+                        }
+
+                        return RedirectToAction("DeleteCabinet", "Admin");
+                    }
+                }
+
+                return View(new CustomCabinet { Cabinets = cabinets });
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        public IActionResult DeleteTeacher()
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var teachers = new List<string>();
+                foreach (var t in db.Teachers)
+                {
+                    if (!string.IsNullOrEmpty(t.FirstName))
+                    {
+                        teachers.Add(t.FirstName + " " + t.LastName + " (" + t.TeacherId + ")");
+                    }
+                }
+
+                return View(new CustomTeacher { Teachers = teachers });
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult DeleteTeacher(CustomTeacher teacher)
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var teachers = new List<string>();
+                foreach (var t in db.Teachers)
+                {
+                    if (!string.IsNullOrEmpty(t.FirstName))
+                    {
+                        teachers.Add(t.FirstName + " " + t.LastName + " (" + t.TeacherId + ")");
+                    }
+                }
+
+                if (ModelState.IsValid)
+                {
+                    if (teacher.SelectedTeacher != null)
+                    {
+                        Teacher teacher1 = db.Teachers.FirstOrDefault(t => t.FirstName + " " + t.LastName + " (" + t.TeacherId + ")" == teacher.SelectedTeacher);
+                        var isTeacherUsedInLessons = db.StudentSchedules.Any(ss => ss.TeacherId == teacher1.TeacherId);
+                        if (isTeacherUsedInLessons)
+                        {
+                            ViewBag.UsedInLessons = "Cannot delete this teacher, because it is used in Lessons.";
+                            return View(new CustomTeacher { Teachers = teachers });
+                        }
+
+                        if (teacher1 != null)
+                        {
+                            db.Teachers.Remove(teacher1);
+                            db.SaveChanges();
+                        }
+
+                        return RedirectToAction("DeleteTeacher", "Admin");
+                    }
+                }
+
+                return View(new CustomTeacher { Teachers = teachers });
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        public IActionResult DeleteStudent()
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var students = new List<string>();
+                foreach (var s in db.Students)
+                {
+                    if (!string.IsNullOrEmpty(s.FirstName))
+                    {
+                        students.Add(s.FirstName + " " + s.LastName + " (" + s.StudentId + ")");
+                    }
+                }
+
+                return View(new CustomStudentDel { Students = students });
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        // TODO: Trim names.
+        [Authorize]
+        [HttpPost]
+        public IActionResult DeleteStudent(CustomStudentDel student)
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var students = new List<string>();
+                foreach (var s in db.Students)
+                {
+                    if (!string.IsNullOrEmpty(s.FirstName))
+                    {
+                        students.Add(s.FirstName + " " + s.LastName + " (" + s.StudentId + ")");
+                    }
+                }
+
+                if (ModelState.IsValid)
+                {
+                    if (student.SelectedStudent != null)
+                    {
+                        Student student1 = db.Students.FirstOrDefault(s => s.FirstName + " " + s.LastName + " (" + s.StudentId + ")" == student.SelectedStudent);
+                        var isStudentUsedInMarks = db.Marks.Any(m => m.StudentId == student1.StudentId);
+                        if (isStudentUsedInMarks)
+                        {
+                            ViewBag.UsedInMarks = "Cannot delete this student, because it is used in Marks.";
+                            return View(new CustomStudentDel { Students = students });
+                        }
+
+                        if (student1 != null)
+                        {
+                            db.Students.Remove(student1);
+                            db.SaveChanges();
+                        }
+
+                        return RedirectToAction("DeleteStudent", "Admin");
+                    }
+                }
+
+                return View(new CustomStudentDel { Students = students });
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        // [Authorize]
+        public IActionResult DeleteMark()
+        {
+            //if (HttpContext.Session.Keys.Contains("admin"))
+            //{
+            return View();
+            //}
+            //else
+            //{
+            //    return RedirectToAction("Logout", "Account");
+            //}
+        }
+
+        // [Authorize]
+        public IActionResult DeleteLesson()
+        {
+            //if (HttpContext.Session.Keys.Contains("admin"))
+            //{
+            return View();
+            //}
+            //else
+            //{
+            //    return RedirectToAction("Logout", "Account");
+            //}
         }
 
         #endregion Delete

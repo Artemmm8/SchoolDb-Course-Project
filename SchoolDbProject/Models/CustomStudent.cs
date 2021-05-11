@@ -26,7 +26,6 @@ namespace SchoolDbProject.Models
         public string ConfirmPassword { get; set; }
 
         public string ClassName { get; set; }
-
         public List<string> Classes { get; set; }
     }
 }
