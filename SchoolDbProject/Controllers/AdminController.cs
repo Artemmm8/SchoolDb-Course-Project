@@ -425,7 +425,7 @@ namespace SchoolDbProject.Controllers
                         }
                     }
 
-                    db.Database.ExecuteSqlInterpolated($"INSERT INTO Mark (Mark, StudentId, SubjectId) VALUES ({customMarks.SelectedMark}, {studendId}, {subjectId})");
+                    db.Database.ExecuteSqlInterpolated($"INSERT INTO Mark (Mark, StudentId, SubjectId, Date) VALUES ({customMarks.SelectedMark}, {studendId}, {subjectId}, {DateTime.Now})");
                     return View(new CustomTeacherMarks { Classes = new List<string>(classes), Students = new List<string>(), Subjects = new List<string>(), Marks = new List<byte?>() });
                 }
 
@@ -977,7 +977,7 @@ namespace SchoolDbProject.Controllers
                             return View();
                         }
 
-                        // TODO: update database (add date column to Mark and increase PhoneNumber field).
+                        // TODO: update regular expression.
                         // pattern = @"\+[0-9]{3}\([0-9]{2}\)[0-9]{3}-[0-9]{2}-[0-9]{2}";
                         pattern = @"[0-9]{3}[0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2}";
                         var number = item.SelectSingleNode("PhoneNumber").InnerText;
@@ -1248,6 +1248,13 @@ namespace SchoolDbProject.Controllers
                             ViewBag.NoLessonForMarking = $"Cannot insert object with not founded lesson. There is no lesson for {db.Classes.FirstOrDefault(c => c.ClassId == student.ClassId).ClassName} class on {db.Subjects.FirstOrDefault(s => s.SubjectId == subId).SubjectName}. Import was interrupted.";
                             return View();
                         }
+
+                        var dateString = item.SelectSingleNode("Date").InnerText;
+                        if (!DateTime.TryParse(dateString, out DateTime dateValue))
+                        {
+                            ViewBag.BadDate = "Cannot insert object with incorrect date format. Import was interrupted.";
+                            return View();
+                        }
                     }
 
                     foreach (XmlNode item in dataNodes)
@@ -1255,7 +1262,8 @@ namespace SchoolDbProject.Controllers
                         var mark = Convert.ToByte(item.SelectSingleNode("Mark").InnerText);
                         var stId = Convert.ToInt32(item.SelectSingleNode("StudentId").InnerText);
                         var subId = Convert.ToInt32(item.SelectSingleNode("SubjectId").InnerText);
-                        db.Database.ExecuteSqlInterpolated($"INSERT INTO Mark (Mark, StudentId, SubjectId) VALUES ({mark}, {stId}, {subId})");
+                        var date = Convert.ToDateTime(item.SelectSingleNode("Date").InnerText);
+                        db.Database.ExecuteSqlInterpolated($"INSERT INTO Mark (Mark, StudentId, SubjectId, Date) VALUES ({mark}, {stId}, {subId}, {date})");
                     }
                 }
 
@@ -1432,7 +1440,7 @@ namespace SchoolDbProject.Controllers
 
         #endregion Add By XML
 
-        // NOT finished
+        // Finished
         #region Delete
 
         [Authorize]
@@ -1767,34 +1775,192 @@ namespace SchoolDbProject.Controllers
             }
         }
 
-        // [Authorize]
+        [Authorize]
         public IActionResult DeleteMark()
         {
-            //if (HttpContext.Session.Keys.Contains("admin"))
-            //{
-            return View();
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Logout", "Account");
-            //}
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var marks = new List<string>();
+                var marksFriendly = db.Marks
+                    .Join(db.Subjects, m => m.SubjectId, s => s.SubjectId, (m, s) => new { m.Mark1, m.StudentId, m.Date, s.SubjectName })
+                    .Join(db.Students, ms => ms.StudentId, s => s.StudentId, (ms, s) => new { ms.Mark1, ms.Date, ms.SubjectName, s.FirstName, s.LastName, s.StudentId })
+                    .ToList();
+                foreach (var m in marksFriendly)
+                {
+                    if (!string.IsNullOrEmpty(m.FirstName))
+                    {
+                        marks.Add(m.Mark1 + "  " + m.SubjectName + "  " + m.FirstName + " " + m.LastName + " (" + m.StudentId + ")" + "  " + m.Date);
+                    }
+                }
+
+                return View(new CustomMark { Marks = marks });
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
         }
 
-        // [Authorize]
+        [Authorize]
+        [HttpPost]
+        public IActionResult DeleteMark(CustomMark mark)
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var marks = new List<string>();
+                var marksFriendly = db.Marks
+                    .Join(db.Subjects, m => m.SubjectId, s => s.SubjectId, (m, s) => new { m.Mark1, m.StudentId, m.Date, s.SubjectName, s.SubjectId })
+                    .Join(db.Students, ms => ms.StudentId, s => s.StudentId, (ms, s) => new { ms.Mark1, ms.Date, ms.SubjectName, s.FirstName, s.LastName, s.StudentId, ms.SubjectId })
+                    .ToList();
+                foreach (var m in marksFriendly)
+                {
+                    if (!string.IsNullOrEmpty(m.FirstName))
+                    {
+                        marks.Add(m.Mark1 + "  " + m.SubjectName + "  " + m.FirstName + " " + m.LastName + " (" + m.StudentId + ")" + "  " + m.Date);
+                    }
+                }
+
+                if (ModelState.IsValid)
+                {
+                    if (mark.SelectedMark != null)
+                    {
+                        var mark1 = marksFriendly.FirstOrDefault(m => m.Mark1 + " " + m.SubjectName + " " + m.FirstName + " " + m.LastName + " (" + m.StudentId + ")" + " " + m.Date == mark.SelectedMark);
+                        var mark2 = db.Marks.FirstOrDefault(m => m.StudentId == mark1.StudentId && m.SubjectId == mark1.SubjectId && m.Date == mark1.Date && m.Mark1 == mark1.Mark1);
+
+                        if (mark2 != null)
+                        {
+                            db.Database.ExecuteSqlInterpolated($"DELETE FROM Mark WHERE Mark = {mark2.Mark1} AND StudentId = {mark2.StudentId} AND SubjectId = {mark2.SubjectId} AND Date = {mark2.Date}");
+                        }
+
+                        return RedirectToAction("DeleteMark", "Admin");
+                    }
+                }
+
+                return View(new CustomMark { Marks = marks });
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
         public IActionResult DeleteLesson()
         {
-            //if (HttpContext.Session.Keys.Contains("admin"))
-            //{
-            return View();
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Logout", "Account");
-            //}
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var lessons = new List<string>();
+                var days = new Dictionary<byte?, string>
+            {
+                { 1, "Monday" },
+                { 2, "Tuesday"},
+                { 3, "Wednesday" },
+                { 4, "Thursday" },
+                { 5, "Friday" }
+            };
+
+                var lessonsFriendly = db.StudentSchedules
+                    .Join(db.Subjects, ss => ss.SubjectId, s => s.SubjectId, (ss, s) => new { ss.LessonNumber, Day = ss.DayOfWeek, ss.CabinetId, ss.TeacherId, ss.ClassId, s.SubjectName })
+                    .Join(db.Classes, sssd => sssd.ClassId, c => c.ClassId, (sssd, c) => new { sssd.LessonNumber, sssd.Day, sssd.CabinetId, c.ClassName, sssd.TeacherId, sssd.SubjectName })
+                    .Join(db.Teachers, sssdc => sssdc.TeacherId, t => t.TeacherId, (sssdc, t) => new { sssdc.LessonNumber, sssdc.Day, sssdc.CabinetId, sssdc.ClassName, sssdc.SubjectName, t.FirstName, t.LastName, t.TeacherId })
+                    .ToList();
+                foreach (var l in lessonsFriendly)
+                {
+                    foreach (var d in days)
+                    {
+                        if (!string.IsNullOrEmpty(l.FirstName) && d.Key == l.Day)
+                        {
+                            lessons.Add(d.Value + " " + l.LessonNumber + " " + l.ClassName + " " + l.SubjectName + " " + l.CabinetId + " " + l.FirstName + " " + l.LastName + " (" + l.TeacherId + ")");
+                        }
+                    }
+                }
+
+                return View(new CustomLesson { Lessons = lessons });
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult DeleteLesson(CustomLesson lesson)
+        {
+            if (HttpContext.Session.Keys.Contains("admin"))
+            {
+                var lessons = new List<string>();
+                var days = new Dictionary<byte?, string>
+            {
+                { 1, "Monday" },
+                { 2, "Tuesday"},
+                { 3, "Wednesday" },
+                { 4, "Thursday" },
+                { 5, "Friday" }
+            };
+
+                var lessonsFriendly = db.StudentSchedules
+                    .Join(db.Subjects, ss => ss.SubjectId, s => s.SubjectId, (ss, s) => new { ss.LessonNumber, Day = ss.DayOfWeek, ss.CabinetId, ss.TeacherId, ss.ClassId, s.SubjectName, s.SubjectId })
+                    .Join(db.Classes, sss => sss.ClassId, c => c.ClassId, (sss, c) => new { sss.LessonNumber, sss.Day, sss.CabinetId, c.ClassName, sss.TeacherId, sss.SubjectName, sss.SubjectId, c.ClassId })
+                    .Join(db.Teachers, sssc => sssc.TeacherId, t => t.TeacherId, (sssc, t) => new { sssc.LessonNumber, sssc.Day, sssc.CabinetId, sssc.ClassName, sssc.SubjectName, t.FirstName, t.LastName, t.TeacherId, sssc.ClassId, sssc.SubjectId })
+                    .ToList();
+                foreach (var l in lessonsFriendly)
+                {
+                    foreach (var d in days)
+                    {
+                        if (!string.IsNullOrEmpty(l.FirstName) && d.Key == l.Day)
+                        {
+                            lessons.Add(d.Value + " " + l.LessonNumber + " " + l.ClassName + " " + l.SubjectName + " " + l.CabinetId + " " + l.FirstName + " " + l.LastName + " (" + l.TeacherId + ")");
+                        }
+                    }
+                }
+
+                if (ModelState.IsValid)
+                {
+                    if (lesson.SelectedLesson != null)
+                    {
+                        var words = lesson.SelectedLesson.Split(new char[] { ' ' });
+                        switch (words[0])
+                        {
+                            case "Monday":
+                                lesson.SelectedLesson = lesson.SelectedLesson.Replace(words[0], "1");
+                                break;
+                            case "Tuesday":
+                                lesson.SelectedLesson = lesson.SelectedLesson.Replace(words[0], "2");
+                                break;
+                            case "Wednesday":
+                                lesson.SelectedLesson = lesson.SelectedLesson.Replace(words[0], "3");
+                                break;
+                            case "Thursday":
+                                lesson.SelectedLesson = lesson.SelectedLesson.Replace(words[0], "4");
+                                break;
+                            case "Friday":
+                                lesson.SelectedLesson = lesson.SelectedLesson.Replace(words[0], "5");
+                                break;
+                        }
+
+                        var lesson1 = lessonsFriendly.FirstOrDefault(l => l.Day + " " + l.LessonNumber + " " + l.ClassName + " " + l.SubjectName + " " + l.CabinetId + " " + l.FirstName + " " + l.LastName + " (" + l.TeacherId + ")" == lesson.SelectedLesson);
+                        var lesson2 = db.StudentSchedules.FirstOrDefault(ss => ss.LessonNumber == lesson1.LessonNumber && ss.DayOfWeek == lesson1.Day && ss.ClassId == lesson1.ClassId && ss.SubjectId == lesson1.SubjectId && ss.CabinetId == lesson1.CabinetId && ss.TeacherId == lesson1.TeacherId);
+
+                        if (lesson2 != null)
+                        {
+                            db.Database.ExecuteSqlInterpolated($"DELETE FROM StudentSchedule WHERE LessonNumber = {lesson2.LessonNumber} AND DayOfWeek = {lesson2.DayOfWeek} AND SubjectId = {lesson2.SubjectId} AND ClassId = {lesson2.ClassId} AND SubjectId = {lesson2.SubjectId} AND TeacherId = {lesson2.TeacherId}");
+                        }
+
+                        return RedirectToAction("DeleteLesson", "Admin");
+                    }
+                }
+
+                return View(new CustomLesson { Lessons = lessons });
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Account");
+            }
         }
 
         #endregion Delete
-
+        // TODO: validating admin form.
         // NOT finished
         #region Edit
         #endregion Edit

@@ -20,10 +20,5 @@ namespace SchoolDbProject.Models
         public int? SelectedCabinet { get; set; }
         public byte? SelectedLessonNumber { get; set; }
         public byte? SelectedDayOfWeek { get; set; }
-
-        [Required(ErrorMessage = "This field is required.")]
-        public string SelectedLesson { get; set; }
-
-        public List<string> LessonsList { get; set; }
     }
 }

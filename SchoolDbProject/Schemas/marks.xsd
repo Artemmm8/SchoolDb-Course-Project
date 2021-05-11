@@ -9,6 +9,7 @@
               <xs:element type="xs:integer" name="Mark" />
               <xs:element type="xs:integer" name="StudentId" />
               <xs:element type="xs:integer" name="SubjectId" />
+              <xs:element type="xs:string" name="Date" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

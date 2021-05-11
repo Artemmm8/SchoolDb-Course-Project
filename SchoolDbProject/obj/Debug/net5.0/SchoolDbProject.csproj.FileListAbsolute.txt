@@ -106,4 +106,6 @@ F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\D
 F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\Razor\Views\Admin\DeleteCabinet.cshtml.g.cs
 F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\Razor\Views\Admin\DeleteTeacher.cshtml.g.cs
 F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\Razor\Views\Admin\DeleteStudent.cshtml.g.cs
+F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\Razor\Views\Admin\DeleteMark.cshtml.g.cs
+F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\Razor\Views\Admin\DeleteLesson.cshtml.g.cs
 F:\3-ий курс\SCHOOLDB COURSE PROJECT\SchoolDbProject\SchoolDbProject\obj\Debug\net5.0\SchoolDbProject.csprojAssemblyReference.cache

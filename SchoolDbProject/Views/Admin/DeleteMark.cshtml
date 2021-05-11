@@ -1,0 +1,77 @@
+﻿@model CustomMark
+
+<style>
+    .flex {
+        display: flex;
+    }
+
+    li {
+        list-style-type: none;
+        padding: 10px;
+        height: 50px;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    #li1 {
+        width: 400px;
+    }
+
+    #submbtn {
+        margin-left: 413px;
+    }
+
+    .format {
+        width: 450px;
+        padding-left: 20px;
+        color: darkgray;
+        font-size: small;
+    }
+</style>
+
+<div>
+    <form id="liform" asp-action="DeleteMark" asp-controller="Admin">
+        <div class="flex">
+            <div>
+                <ul>
+                    <li>
+                        Choose mark:
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>
+                        @Html.DropDownListFor(m => m.SelectedMark, new SelectList(Model.Marks), " ", new { id = "li1", onchange = "getSelected1()" })
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>
+                        <div class="text-danger">@Html.ValidationMessageFor(m => m.SelectedMark)</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="flex">
+            <div>
+                <input id="submbtn" type="button" value="Delete Mark" class="btn btn-outline-danger" />
+            </div>
+            <div class="format">
+                * Format is [Mark] [Subject name] [Student full name and Id] [Date]
+            </div>
+        </div>
+        
+    </form>
+</div>
+
+<script defer type="text/javascript">
+    submbtn.onclick = function () {
+        document.getElementById("liform").submit();
+    }
+</script>

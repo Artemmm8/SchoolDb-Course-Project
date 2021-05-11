@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<examples>
+	<example>
+		<Id>1</Id>
+		<Name>la</Name>
+	</example>
+	<example>
+		<Id>2</Id>
+		<Name>da</Name>
+	</example>
+	<example>
+		<Id>3</Id>
+		<Name>de</Name>
+	</example>
+</examples>

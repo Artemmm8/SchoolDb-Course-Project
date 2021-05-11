@@ -1,0 +1,76 @@
+﻿@model CustomLesson
+
+<style>
+    .flex {
+        display: flex;
+    }
+
+    li {
+        list-style-type: none;
+        padding: 10px;
+        height: 50px;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    #li1 {
+        width: 400px;
+    }
+
+    #submbtn {
+        margin-left: 413px;
+    }
+
+    .format {
+        width: 350px;
+        padding-left: 20px;
+        color: darkgray;
+        font-size: small;
+    }
+</style>
+
+<div>
+    <form id="liform" asp-action="DeleteLesson" asp-controller="Admin">
+        <div class="flex">
+            <div>
+                <ul>
+                    <li>
+                        Choose lesson:
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>
+                        @Html.DropDownListFor(l => l.SelectedLesson, new SelectList(Model.Lessons), " ", new { id = "li1", onchange = "getSelected1()" })
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>
+                        <div class="text-danger">@Html.ValidationMessageFor(l => l.SelectedLesson)</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="flex">
+            <div>
+                <input id="submbtn" type="button" value="Delete Lesson" class="btn btn-outline-danger" />
+            </div>
+            <div class="format">
+                * Format is [Day of week] [Lesson number] [Class name] [Subject name] [Cabinet] [Teacher full name and Id]
+            </div>
+        </div>
+    </form>
+</div>
+
+<script defer type="text/javascript">
+    submbtn.onclick = function () {
+        document.getElementById("liform").submit();
+    }
+</script>

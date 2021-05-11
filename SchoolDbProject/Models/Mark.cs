@@ -10,6 +10,7 @@ namespace SchoolDbProject.Models
         public byte? Mark1 { get; set; }
         public int? StudentId { get; set; }
         public int? SubjectId { get; set; }
+        public DateTime Date { get; set; }
 
         public virtual Student Student { get; set; }
         public virtual Subject Subject { get; set; }
