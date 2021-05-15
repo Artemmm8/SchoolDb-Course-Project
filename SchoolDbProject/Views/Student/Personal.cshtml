@@ -28,6 +28,10 @@
     .linput {
         width: 400px;
     }
+
+    .text-danger {
+        margin-left: 15px;
+    }
 </style>
 
 <div class="flex">
@@ -73,11 +77,24 @@
                             @Html.TextBoxFor(s => s.LastName, new { autocomplete = "off", value = Model.LastName, @class = "linput" })
                         </li>
                         <li>
-                            @Html.TextBoxFor(s => s.Email, new { autocomplete = "off", value = Model.Email, @class = "linput" })
-                            <div class="text-danger">@Html.ValidationMessageFor(s => s.Email)</div>
+                            <div class="flex">
+                                <div>
+                                    @Html.TextBoxFor(s => s.Email, new { autocomplete = "off", value = Model.Email, @class = "linput" })
+                                </div>
+                                <div class="text-danger">
+                                    @Html.ValidationMessageFor(s => s.Email)
+                                </div>
+                            </div>
                         </li>
                         <li>
-                            @Html.TextBoxFor(s => s.PhoneNumber, new { autocomplete = "off", value = Model.PhoneNumber, @class = "linput" })
+                            <div class="flex">
+                                <div>
+                                    @Html.TextBoxFor(s => s.PhoneNumber, new { autocomplete = "off", value = Model.PhoneNumber, @class = "linput" })
+                                </div>
+                                <div class="text-danger">
+                                    @Html.ValidationMessageFor(s => s.PhoneNumber)
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>

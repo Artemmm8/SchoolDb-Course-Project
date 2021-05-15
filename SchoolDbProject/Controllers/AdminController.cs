@@ -50,7 +50,6 @@ namespace SchoolDbProject.Controllers
         {
             if (HttpContext.Session.Keys.Contains("admin"))
             {
-                Admin admin = HttpContext.Session.Get<Admin>("admin");
                 return View();
             }
             else
@@ -237,7 +236,7 @@ namespace SchoolDbProject.Controllers
                     }
                     else
                     {
-                        ViewBag.ErrorMessage = $"Teacher with Id = { teacher.TeacherId} already exists."; ;
+                        ViewBag.ErrorMessage = $"Teacher with Id = { teacher.TeacherId} already exists.";
                     }
                 }
 
@@ -1098,8 +1097,7 @@ namespace SchoolDbProject.Controllers
                             return View();
                         }
 
-                        // pattern = @"\+[0-9]{3}\([0-9]{2}\)[0-9]{3}-[0-9]{2}-[0-9]{2}";
-                        pattern = @"[0-9]{3}[0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2}";
+                        pattern = @"\+[0-9]{3}\([0-9]{2}\)[0-9]{3}-[0-9]{2}-[0-9]{2}";
                         var number = item.SelectSingleNode("PhoneNumber").InnerText;
                         if (!Regex.IsMatch(number, pattern, RegexOptions.IgnoreCase))
                         {

@@ -17,6 +17,8 @@ namespace SchoolDbProject.Models
         public string Email { get; set; }
 
         public string Password { get; set; }
+
+        [PhoneNumberBel(ErrorMessage = "Incorrect Phone Number Format.")]
         public string PhoneNumber { get; set; }
         public int? ClassId { get; set; }
 

@@ -77,6 +77,7 @@ namespace SchoolDbProject.Controllers
             {
                 Student student = HttpContext.Session.Get<Student>("student");
                 var schedule = db.StudentSchedules
+                    .Distinct()
                     .Where(ss => ss.ClassId == student.ClassId)
                     .Join(db.Subjects, ss => ss.SubjectId, s => s.SubjectId, (ss, s) => new { Subject = s.SubjectName, LessonNumber = ss.LessonNumber, DayOfWeek = ss.DayOfWeek, CabinetId = ss.CabinetId });
                 List<CustomSchedule> customStudentSchedule = new List<CustomSchedule>();
@@ -84,6 +85,8 @@ namespace SchoolDbProject.Controllers
                 {
                     customStudentSchedule.Add(new CustomSchedule { Subject = s.Subject, LessonNumber = s.LessonNumber, DayOfWeek = s.DayOfWeek, CabinetId = s.CabinetId });
                 }
+
+                customStudentSchedule.Sort();
 
                 return View(customStudentSchedule);
             }

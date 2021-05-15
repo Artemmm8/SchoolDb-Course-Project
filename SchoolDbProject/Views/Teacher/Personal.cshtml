@@ -28,6 +28,10 @@
     .linput {
         width: 400px;
     }
+
+    .text-danger {
+        margin-left: 15px;
+    }
 </style>
 
 <div class="flex">
@@ -73,11 +77,25 @@
                             @Html.TextBoxFor(t => t.LastName, new { autocomplete = "off", value = Model.LastName, @class = "linput" })
                         </li>
                         <li>
-                            @Html.TextBoxFor(t => t.Email, new { autocomplete = "off", value = Model.Email, @class = "linput" })
-                            <div class="text-danger">@Html.ValidationMessageFor(t => t.Email)</div>
+                            <div class="flex">
+                                <div>
+                                    @Html.TextBoxFor(t => t.Email, new { autocomplete = "off", value = Model.Email, @class = "linput" })
+                                </div>
+                                <div class="text-danger">
+                                    @Html.ValidationMessageFor(t => t.Email)
+                                </div>
+                            </div>
                         </li>
                         <li>
-                            @Html.TextBoxFor(t => t.PhoneNumber, new { autocomplete = "off", value = Model.PhoneNumber, @class = "linput" })
+                            <div class="flex">
+                                <div>
+                                    @Html.TextBoxFor(t => t.PhoneNumber, new { autocomplete = "off", value = Model.PhoneNumber, @class = "linput" })
+                                </div>
+                                <div class="text-danger">
+                                    @Html.ValidationMessageFor(t => t.PhoneNumber)
+                                </div>
+                            </div>
+                            
                         </li>
                     </ul>
                 </div>
@@ -86,7 +104,6 @@
                 <input id="submbtn" type="submit" value="Save" class="btn btn-outline-dark" />
             </div>
         </form>
-
     </div>
 </div>
 

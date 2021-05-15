@@ -1,6 +1,10 @@
 ﻿<style>
     .flex {
         display: flex;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 
     li {
@@ -10,175 +14,232 @@
     ul {
         padding-left: 15px;
     }
+
+    button {
+        width: 120px;
+        margin: 10px;
+    }
+
+    .center-column {
+        text-align: center;
+    }
+
+    .btn-outline-primary {
+        width: 120px;
+        margin-top: 10px;
+    }
 </style>
 
 <div class="flex">
-    <div>
-        <ul>
-            <li>
-                ___
-            </li>
-            <li>
-                Subjects
-            </li>
-            <li>
-                Classes
-            </li>
-            <li>
-                Cabinets
-            </li>
-            <li>
-                Teachers
-            </li>
-            <li>
-                Students
-            </li>
-            <li>
-                Marks
-            </li>
-            <li>
-                Lessons
-            </li>
-        </ul>
+    <div class="center-column">
+        <div>
+            Subjects
+        </div>
+        <div>
+            <button id="subAddForm" class="btn btn-outline-success">Add By Form</button>
+        </div>
+        <div>
+            <button id="subAddXml" class="btn btn-outline-success">Add By XML</button>
+        </div>
+        <div>
+            <button id="subDel" class="btn btn-outline-danger">Delete</button>
+        </div>
+        <div>
+            <a href='@Url.Action("ExportSubjects", "Admin", new { name = "subjects.xml" })' class="btn btn-outline-primary">Export</a>
+        </div>
     </div>
-    <div>
-        <ul>
-            <li>
-                Add
-            </li>
-            <li>
-                @Html.ActionLink("By Form", "AddSubjectByForm", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("By Form", "AddClassByForm", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("By Form", "AddCabinetByForm", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("By Form", "AddTeacherByForm", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("By Form", "AddStudentByForm", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("By Form", "AddMarkByForm", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("By Form", "AddLessonByForm", "Admin")
-            </li>
-        </ul>
+    <div class="center-column">
+        <div>
+            Classes
+        </div>
+        <div>
+            <button id="clAddForm" class="btn btn-outline-success">Add By Form</button>
+        </div>
+        <div>
+            <button id="clAddXml" class="btn btn-outline-success">Add By XML</button>
+        </div>
+        <div>
+            <button id="clDel" class="btn btn-outline-danger">Delete</button>
+        </div>
+        <div>
+            <a href='@Url.Action("ExportClasses", "Admin", new { name = "classes.xml" })' class="btn btn-outline-primary">Export</a>
+        </div>
     </div>
-    <div>
-        <ul>
-            <li>
-                Add
-            </li>
-            <li>
-                @Html.ActionLink("By XML", "AddSubjectByXml", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("By XML", "AddClassByXml", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("By XML", "AddCabinetByXml", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("By XML", "AddTeacherByXml", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("By XML", "AddStudentByXml", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("By XML", "AddMarkByXml", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("By XML", "AddLessonByXml", "Admin")
-            </li>
-        </ul>
+    <div class="center-column">
+        <div>
+            Cabinets
+        </div>
+        <div>
+            <button id="cabAddForm" class="btn btn-outline-success">Add By Form</button>
+        </div>
+        <div>
+            <button id="cabAddXml" class="btn btn-outline-success">Add By XML</button>
+        </div>
+        <div>
+            <button id="cabDel" class="btn btn-outline-danger">Delete</button>
+        </div>
+        <div>
+            <a href='@Url.Action("ExportCabinets", "Admin", new { name = "cabinets.xml" })' class="btn btn-outline-primary">Export</a>
+        </div>
     </div>
-    <div>
-        <ul>
-            <li>
-                ___
-            </li>
-            <li>
-                @Html.ActionLink("Delete", "DeleteSubject", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("Delete", "DeleteClass", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("Delete", "DeleteCabinet", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("Delete", "DeleteTeacher", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("Delete", "DeleteStudent", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("Delete", "DeleteMark", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("Delete", "DeleteLesson", "Admin")
-            </li>
-        </ul>
+    <div class="center-column">
+        <div>
+            Teachers
+        </div>
+        <div>
+            <button id="teaAddForm" class="btn btn-outline-success">Add By Form</button>
+        </div>
+        <div>
+            <button id="teaAddXml" class="btn btn-outline-success">Add By XML</button>
+        </div>
+        <div>
+            <button id="teaDel" class="btn btn-outline-danger">Delete</button>
+        </div>
+        <div>
+            <a href='@Url.Action("ExportTeachers", "Admin", new { name = "teachers.xml" })' class="btn btn-outline-primary">Export</a>
+        </div>
     </div>
-    <div>
-        <ul>
-            <li>
-                ___
-            </li>
-            <li>
-                @Html.ActionLink("Edit", "EditSubject", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("Edit", "EditClass", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("Edit", "EditCabinet", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("Edit", "EditTeacher", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("Edit", "EditStudent", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("Edit", "EditMark", "Admin")
-            </li>
-            <li>
-                @Html.ActionLink("Edit", "EditLesson", "Admin")
-            </li>
-        </ul>
+    <div class="center-column">
+        <div>
+            Students
+        </div>
+        <div>
+            <button id="stAddForm" class="btn btn-outline-success">Add By Form</button>
+        </div>
+        <div>
+            <button id="stAddXml" class="btn btn-outline-success">Add By XML</button>
+        </div>
+        <div>
+            <button id="stDel" class="btn btn-outline-danger">Delete</button>
+        </div>
+        <div>
+            <a href='@Url.Action("ExportStudents", "Admin", new { name = "students.xml" })' class="btn btn-outline-primary">Export</a>
+        </div>
     </div>
-    <div>
-        <ul>
-            <li>
-                ___
-            </li>
-            <li>
-                @Html.ActionLink("Export", "ExportSubjects", "Admin", new { name = "subjects.xml" })
-            </li>
-            <li>
-                @Html.ActionLink("Export", "ExportClasses", "Admin", new { name = "classes.xml" })
-            </li>
-            <li>
-                @Html.ActionLink("Export", "ExportCabinets", "Admin", new { name = "cabinets.xml" })
-            </li>
-            <li>
-                @Html.ActionLink("Export", "ExportTeachers", "Admin", new { name = "teachers.xml" })
-            </li>
-            <li>
-                @Html.ActionLink("Export", "ExportStudents", "Admin", new { name = "students.xml" })
-            </li>
-            <li>
-                @Html.ActionLink("Export", "ExportMarks", "Admin", new { name = "marks.xml" })
-            </li>
-            <li>
-                @Html.ActionLink("Export", "ExportLessons", "Admin", new { name = "lessons.xml" })
-            </li>
-        </ul>
+    <div class="center-column">
+        <div>
+            Marks
+        </div>
+        <div>
+            <button id="marAddForm" class="btn btn-outline-success">Add By Form</button>
+        </div>
+        <div>
+            <button id="marAddXml" class="btn btn-outline-success">Add By XML</button>
+        </div>
+        <div>
+            <button id="marDel" class="btn btn-outline-danger">Delete</button>
+        </div>
+        <div>
+            <a href='@Url.Action("ExportMarks", "Admin", new { name = "marks.xml" })' class="btn btn-outline-primary">Export</a>
+        </div>
+    </div>
+    <div class="center-column">
+        <div>
+            Lessons
+        </div>
+        <div>
+            <button id="lesAddForm" class="btn btn-outline-success">Add By Form</button>
+        </div>
+        <div>
+            <button id="lesAddXml" class="btn btn-outline-success">Add By XML</button>
+        </div>
+        <div>
+            <button id="lesDel" class="btn btn-outline-danger">Delete</button>
+        </div>
+        <div>
+            <a href='@Url.Action("ExportLessons", "Admin", new { name = "lessons.xml" })' class="btn btn-outline-primary">Export</a>
+        </div>
     </div>
 </div>
+
+<script defer type="text/javascript">
+    subAddForm.onclick = function () {
+        window.open('https://localhost:44389/Admin/AddSubjectByForm', '_self');
+    }
+
+    subAddXml.onclick = function () {
+        window.open('https://localhost:44389/Admin/AddSubjectByXml', '_self');
+    }
+
+    subDel.onclick = function () {
+        window.open('https://localhost:44389/Admin/DeleteSubject', '_self');
+    }
+
+
+    clAddForm.onclick = function () {
+        window.open('https://localhost:44389/Admin/AddClassByForm', '_self');
+    }
+
+    clAddXml.onclick = function () {
+        window.open('https://localhost:44389/Admin/AddClassByXml', '_self');
+    }
+
+    clDel.onclick = function () {
+        window.open('https://localhost:44389/Admin/DeleteClass', '_self');
+    }
+
+
+    cabAddForm.onclick = function () {
+        window.open('https://localhost:44389/Admin/AddCabinetByForm', '_self');
+    }
+
+    cabAddXml.onclick = function () {
+        window.open('https://localhost:44389/Admin/AddCabinetByXml', '_self');
+    }
+
+    cabDel.onclick = function () {
+        window.open('https://localhost:44389/Admin/DeleteCabinet', '_self');
+    }
+
+
+    teaAddForm.onclick = function () {
+        window.open('https://localhost:44389/Admin/AddTeacherByForm', '_self');
+    }
+
+    teaAddXml.onclick = function () {
+        window.open('https://localhost:44389/Admin/AddTeacherByXml', '_self');
+    }
+
+    teaDel.onclick = function () {
+        window.open('https://localhost:44389/Admin/DeleteTeacher', '_self');
+    }
+
+
+    stAddForm.onclick = function () {
+        window.open('https://localhost:44389/Admin/AddStudentByForm', '_self');
+    }
+
+    stAddXml.onclick = function () {
+        window.open('https://localhost:44389/Admin/AddTeacherByXml', '_self');
+    }
+
+    stDel.onclick = function () {
+        window.open('https://localhost:44389/Admin/DeleteStudent', '_self');
+    }
+
+
+    marAddForm.onclick = function () {
+        window.open('https://localhost:44389/Admin/AddMarkByForm', '_self');
+    }
+
+    marAddXml.onclick = function () {
+        window.open('https://localhost:44389/Admin/AddMarkByXml', '_self');
+    }
+
+    marDel.onclick = function () {
+        window.open('https://localhost:44389/Admin/DeleteMark', '_self');
+    }
+
+
+    lesAddForm.onclick = function () {
+        window.open('https://localhost:44389/Admin/AddLessonByForm', '_self');
+    }
+
+    lesAddXml.onclick = function () {
+        window.open('https://localhost:44389/Admin/AddLessonByXml', '_self');
+    }
+
+    lesDel.onclick = function () {
+        window.open('https://localhost:44389/Admin/DeleteLesson', '_self');
+    }
+</script>
